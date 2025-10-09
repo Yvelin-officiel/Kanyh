@@ -1,7 +1,10 @@
 @import "./assets/css/fonts.css";
 @import "tailwindcss";
 
-
+html, body {
+  height: 100%;
+  width: 100%;
+}
 
 @theme {
 
@@ -50,7 +53,7 @@
 .input-field {
   @apply font-cinzel text-[#3b2f1e] text-lg
                 bg-[#f9f5e7] border-2 border-[#c5a059]
-                rounded-xl px-5 py-3 w-64 shadow-[0_4px_8px_rgba(0,0,0,0.15)]
+                rounded-xl px-5 py-3 shadow-[0_4px_8px_rgba(0,0,0,0.15)]
                 focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-[#b8913e]
                 placeholder:text-[#bfa77a]
                 transition duration-300
