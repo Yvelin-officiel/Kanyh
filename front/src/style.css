@@ -1,3 +1,63 @@
+@import "./assets/css/fonts.css";
 @import "tailwindcss";
 
 
+
+@theme {
+
+  --color-primary:#C5A059 ;
+
+  --color-primary-dark:#A17C3B ;
+  
+  --color-secondary:#2D6A4F ;
+
+  --color-secondary-dark:#1B4332 ;
+
+  --color-accent:#B02A37 ;
+
+  --color-light-bg:#F3E9DC ;
+
+  --color-dark-bg:#1E1E2E ;
+
+  --color-txt-primary:#2B2B2B ;
+
+  --color-txt-secondary:#6C757D ;
+
+  --color-success: #81C784 ;
+
+  --color-erreur: #E57373 ;
+
+  --font-cinzel: 'Cinzel', serif;
+
+  --font-inter: 'Inter', sans-serif;
+
+}
+
+
+.btn-primary {
+  @apply px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark font-cinzel transition;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 bg-secondary text-white rounded hover:bg-secondary-dark font-cinzel transition;
+}
+
+
+.titre {
+  @apply text-3xl font-cinzel;
+}
+
+.input-field {
+  @apply font-cinzel text-[#3b2f1e] text-lg
+                bg-[#f9f5e7] border-2 border-[#c5a059]
+                rounded-xl px-5 py-3 w-64 shadow-[0_4px_8px_rgba(0,0,0,0.15)]
+                focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-[#b8913e]
+                placeholder:text-[#bfa77a]
+                transition duration-300
+                hover:border-[#b8913e] hover:shadow-[0_0_12px_rgba(197,160,89,0.4)];
+}
+
+
+.input-label {
+  @apply font-cinzel text-2xl text-[#4b2e05] mb-1
+}
