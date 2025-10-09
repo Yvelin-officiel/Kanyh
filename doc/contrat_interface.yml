@@ -1,0 +1,534 @@
+openapi: 3.0.3
+info:
+  title: API - Guilde des Capuches d'Opale
+  version: 1.1.0
+  description: >
+    API REST pour la gestion des quêtes, aventuriers, équipes, équipements et transactions
+    du projet *Les Capuches d'Opale*.
+
+servers:
+  - url: http://localhost:8080/v1
+
+tags:
+  - name: Quetes
+  - name: Aventuriers
+  - name: Equipes
+  - name: Equipements
+  - name: Transactions
+  - name: Compte
+
+paths:
+
+  /quetes:
+    get:
+      tags: [Quetes]
+      summary: Liste toutes les quêtes
+      responses:
+        '200':
+          description: Liste des quêtes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quete'
+        '500':
+          description: Erreur serveur interne
+
+    post:
+      tags: [Quetes]
+      summary: Crée une nouvelle quête
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueteInput'
+      responses:
+        '201':
+          description: Quête créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quete'
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur interne
+
+  /quetes/{id}:
+    get:
+      tags: [Quetes]
+      summary: Récupère une quête par son ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Quête trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quete'
+        '404':
+          description: Quête non trouvée
+        '500':
+          description: Erreur serveur interne
+
+    put:
+      tags: [Quetes]
+      summary: Met à jour une quête
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueteInput'
+      responses:
+        '200':
+          description: Quête mise à jour
+        '400':
+          description: Données invalides
+        '404':
+          description: Quête non trouvée
+        '500':
+          description: Erreur serveur interne
+
+    delete:
+      tags: [Quetes]
+      summary: Supprime une quête
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Quête supprimée
+        '404':
+          description: Quête non trouvée
+        '500':
+          description: Erreur serveur interne
+
+  /aventuriers:
+    get:
+      tags: [Aventuriers]
+      summary: Liste tous les aventuriers
+      responses:
+        '200':
+          description: Liste des aventuriers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Aventurier'
+        '500':
+          description: Erreur serveur interne
+
+    post:
+      tags: [Aventuriers]
+      summary: Ajoute un aventurier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AventurierInput'
+      responses:
+        '201':
+          description: Aventurier ajouté
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur interne
+
+  /aventuriers/{id}:
+    get:
+      tags: [Aventuriers]
+      summary: Récupère un aventurier
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Aventurier trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aventurier'
+        '404':
+          description: Aventurier non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    put:
+      tags: [Aventuriers]
+      summary: Met à jour un aventurier
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AventurierInput'
+      responses:
+        '200':
+          description: Aventurier mis à jour
+        '400':
+          description: Données invalides
+        '404':
+          description: Aventurier non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    delete:
+      tags: [Aventuriers]
+      summary: Supprime un aventurier
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Aventurier supprimé
+        '404':
+          description: Aventurier non trouvé
+        '500':
+          description: Erreur serveur interne
+
+  /equipes:
+    get:
+      tags: [Equipes]
+      summary: Liste toutes les équipes
+      responses:
+        '200':
+          description: Liste des équipes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Equipe'
+        '500':
+          description: Erreur serveur interne
+
+    post:
+      tags: [Equipes]
+      summary: Crée une équipe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquipeInput'
+      responses:
+        '201':
+          description: Équipe créée
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur interne
+
+  /equipes/{id}:
+    get:
+      tags: [Equipes]
+      summary: Récupère une équipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Équipe trouvée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipe'
+        '404':
+          description: Équipe non trouvée
+        '500':
+          description: Erreur serveur interne
+
+    put:
+      tags: [Equipes]
+      summary: Met à jour une équipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquipeInput'
+      responses:
+        '200':
+          description: Équipe mise à jour
+        '400':
+          description: Données invalides
+        '404':
+          description: Équipe non trouvée
+        '500':
+          description: Erreur serveur interne
+
+    delete:
+      tags: [Equipes]
+      summary: Supprime une équipe
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Équipe supprimée
+        '404':
+          description: Équipe non trouvée
+        '500':
+          description: Erreur serveur interne
+
+  /equipements:
+    get:
+      tags: [Equipements]
+      summary: Liste les équipements
+      responses:
+        '200':
+          description: Liste des équipements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Equipement'
+        '500':
+          description: Erreur serveur interne
+
+    post:
+      tags: [Equipements]
+      summary: Ajoute un équipement
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquipementInput'
+      responses:
+        '201':
+          description: Équipement ajouté
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur interne
+
+  /equipements/{id}:
+    get:
+      tags: [Equipements]
+      summary: Récupère un équipement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Équipement trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Equipement'
+        '404':
+          description: Équipement non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    put:
+      tags: [Equipements]
+      summary: Met à jour un équipement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EquipementInput'
+      responses:
+        '200':
+          description: Équipement mis à jour
+        '400':
+          description: Données invalides
+        '404':
+          description: Équipement non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    delete:
+      tags: [Equipements]
+      summary: Supprime un équipement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Équipement supprimé
+        '404':
+          description: Équipement non trouvé
+        '500':
+          description: Erreur serveur interne
+
+  /transactions:
+    get:
+      tags: [Transactions]
+      summary: Liste toutes les transactions financières
+      responses:
+        '200':
+          description: Liste des transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+        '500':
+          description: Erreur serveur interne
+
+  /compte:
+    get:
+      tags: [Compte]
+      summary: Consulte le solde de la guilde et ses projections
+      responses:
+        '200':
+          description: Informations du compte de la guilde
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompteGuilde'
+        '500':
+          description: Erreur serveur interne
+
+components:
+  schemas:
+
+    Quete:
+      type: object
+      properties:
+        id: { type: integer }
+        nom: { type: string }
+        description: { type: string }
+        prime: { type: number }
+        duree_estimee: { type: integer }
+        date_peremption: { type: string, format: date }
+        experience_gagnee: { type: integer }
+        statut: { type: string, enum: [nouvelle, en_cours, terminee, rejetee] }
+        commanditaire_id: { type: integer }
+        equipe_id: { type: integer, nullable: true }
+
+    QueteInput:
+      type: object
+      required: [nom, description, prime, duree_estimee, date_peremption]
+      properties:
+        nom: { type: string }
+        description: { type: string }
+        prime: { type: number }
+        duree_estimee: { type: integer }
+        date_peremption: { type: string, format: date }
+
+    Aventurier:
+      type: object
+      properties:
+        id: { type: integer }
+        nom: { type: string }
+        specialite: { type: string }
+        niveau_experience: { type: integer }
+        taux_journalier_base: { type: number }
+        disponibilite: { type: string }
+        date_disponibilite: { type: string, format: date }
+
+    AventurierInput:
+      type: object
+      required: [nom, specialite, taux_journalier_base]
+      properties:
+        nom: { type: string }
+        specialite: { type: string }
+        taux_journalier_base: { type: number }
+
+    Equipe:
+      type: object
+      properties:
+        id: { type: integer }
+        nom: { type: string }
+        date_depart: { type: string, format: date }
+        date_retour_prevue: { type: string, format: date }
+        cout_total: { type: number }
+        ratio_rentabilite: { type: number }
+        aventuriers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Aventurier'
+
+    EquipeInput:
+      type: object
+      required: [nom, aventuriers]
+      properties:
+        nom: { type: string }
+        aventuriers:
+          type: array
+          items:
+            type: integer
+
+    Equipement:
+      type: object
+      properties:
+        id: { type: integer }
+        nom: { type: string }
+        type: { type: string }
+        durabilite_restante: { type: integer }
+        disponibilite: { type: string }
+
+    EquipementInput:
+      type: object
+      required: [nom, type]
+      properties:
+        nom: { type: string }
+        type: { type: string }
+
+    Transaction:
+      type: object
+      properties:
+        id: { type: integer }
+        type: { type: string, enum: [prime, salaire, achat, réparation, autre] }
+        montant: { type: number }
+        date: { type: string, format: date-time }
+        description: { type: string }
+        quete_id: { type: integer }
+        aventurier_id: { type: integer }
+        equipement_id: { type: integer }
+
+    CompteGuilde:
+      type: object
+      properties:
+        id: { type: integer }
+        solde_total: { type: number }
+        date_mise_a_jour: { type: string, format: date-time }
+        projections:
+          type: object
+          properties:
+            optimiste: { type: number }
+            realiste: { type: number }
+            pessimiste: { type: number }
