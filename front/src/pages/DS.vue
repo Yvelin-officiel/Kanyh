@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-light-bg h-screen p-8 font-inter">
+  <div class="bg-light-bg h-full   p-8 font-inter">
     <div class="max-w-4xl mx-auto">
       <header class="mb-8">
         <h1 class="text-3xl">Design system preview</h1>
