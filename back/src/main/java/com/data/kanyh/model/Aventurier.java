@@ -18,7 +18,9 @@ public class Aventurier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
-    private String specialite;
+    @ManyToOne
+    @JoinColumn(name = "specialite_id")
+    private Specialite specialite;
     private int niveau;
     private Number tauxJournalierBase;
     private String disponibilite;

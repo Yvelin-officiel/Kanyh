@@ -1,4 +1,4 @@
-package com.data.kanyh.Controller;
+package com.data.kanyh.controller;
 
 import com.data.kanyh.model.Specialite;
 import com.data.kanyh.service.SpecialiteService;
@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/specialite")
 public class SpecialiteController {
 
     @Autowired
     private SpecialiteService specialiteService;
 
-    @PostMapping("/specialite")
+    @PostMapping
     public ResponseEntity<Specialite> addSpecialite(
             @RequestBody Specialite specialite
     ) {
@@ -22,19 +23,19 @@ public class SpecialiteController {
         return ResponseEntity.ok(savedSpecialite);
     }
 
-    @GetMapping("/specialite")
+    @GetMapping
     public ResponseEntity<List<Specialite>> getAllSpecialites() {
         List<Specialite> specialites = specialiteService.getAllSpecialites();
         return ResponseEntity.ok(specialites);
     }
 
-    @DeleteMapping("/specialite/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSpecialite(@PathVariable Integer id) {
         specialiteService.deleteSpecialite(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/specialite/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Specialite> updateSpecialite(
             @PathVariable Integer id,
             @RequestBody Specialite specialiteDetails
