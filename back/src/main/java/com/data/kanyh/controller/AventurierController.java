@@ -2,12 +2,12 @@ package com.data.kanyh.controller;
 
 import com.data.kanyh.dto.AventurierDTO;
 import com.data.kanyh.dto.AventurierInputDTO;
+import com.data.kanyh.dto.AventurierUpdateDTO;
 import com.data.kanyh.service.AventurierService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -21,14 +21,9 @@ public class AventurierController {
     }
 
     @PostMapping
-    public ResponseEntity<AventurierDTO> createAventurier(@RequestBody AventurierInputDTO aventurier) {
+    public ResponseEntity<AventurierDTO> createAventurier(@Valid @RequestBody AventurierInputDTO aventurier) {
         AventurierDTO created = aventurierService.save(aventurier);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(created.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(created);
+        return ResponseEntity.ok(created);
     }
 
     @GetMapping
@@ -41,5 +36,17 @@ public class AventurierController {
     public ResponseEntity<AventurierDTO> getAventurierById(@PathVariable Long id) {
         AventurierDTO dto = aventurierService.getAventurierById(id);
         return ResponseEntity.ok(dto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AventurierDTO> updateAventurier(@Valid @RequestBody AventurierUpdateDTO aventurier) {
+        AventurierDTO updated = aventurierService.update(aventurier);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAventurier(@PathVariable Long id) {
+        aventurierService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

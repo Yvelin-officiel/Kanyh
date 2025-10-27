@@ -2,6 +2,8 @@ package com.data.kanyh.service;
 
 import com.data.kanyh.dto.AventurierDTO;
 import com.data.kanyh.dto.AventurierInputDTO;
+import com.data.kanyh.dto.AventurierUpdateDTO;
+import com.data.kanyh.exception.NotFoundException;
 import com.data.kanyh.mapper.AventurierMapper;
 import com.data.kanyh.model.Aventurier;
 import com.data.kanyh.repository.AventurierRepository;
@@ -32,9 +34,25 @@ public class AventurierService {
                 .toList();
     }
 
-    // TODO : exception NotFound
     public AventurierDTO getAventurierById(Long id) {
-        return aventurierRepository.findById(id).map(aventurierMapper::toDTO).orElseThrow();
+        return aventurierRepository.findById(id)
+                .map(aventurierMapper::toDTO)
+                .orElseThrow(() -> new NotFoundException("Aventurier non trouvé"));
+    }
+
+    public AventurierDTO update(AventurierUpdateDTO dto) {
+        Aventurier aventurier = aventurierRepository.findById(dto.getId())
+                .orElseThrow(() -> new NotFoundException("Aventurier non trouvé"));
+        aventurierMapper.updateEntityFromDTO(dto, aventurier);
+        Aventurier updated = aventurierRepository.save(aventurier);
+        return aventurierMapper.toDTO(updated);
+    }
+
+    public void delete(Long id) {
+        if (!aventurierRepository.existsById(id)) {
+            throw new NotFoundException("Aventurier non trouvé");
+        }
+        aventurierRepository.deleteById(id);
     }
 
 }
