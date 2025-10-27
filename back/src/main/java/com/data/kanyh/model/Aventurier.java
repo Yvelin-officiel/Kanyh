@@ -18,7 +18,6 @@ public class Aventurier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
-    private String specialite;
     private int niveauExperience;
     @ManyToOne
     @JoinColumn(name = "specialite_id")

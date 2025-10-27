@@ -42,22 +42,18 @@ class EquipeMapperTest {
         aventurier1 = new Aventurier();
         aventurier1.setId(1L);
         aventurier1.setNom("Gandalf");
-        aventurier1.setSpecialite("Mage");
 
         aventurierDTO1 = new AventurierDTO();
         aventurierDTO1.setId(1L);
         aventurierDTO1.setNom("Gandalf");
-        aventurierDTO1.setSpecialite("Mage");
 
         aventurier2 = new Aventurier();
         aventurier2.setId(2L);
         aventurier2.setNom("Aragorn");
-        aventurier2.setSpecialite("Guerrier");
 
         aventurierDTO2 = new AventurierDTO();
         aventurierDTO2.setId(2L);
         aventurierDTO2.setNom("Aragorn");
-        aventurierDTO2.setSpecialite("Guerrier");
 
         equipe = new Equipe();
         equipe.setId(1L);
