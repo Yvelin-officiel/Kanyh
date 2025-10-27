@@ -2,14 +2,12 @@ package com.data.kanyh.service;
 
 import com.data.kanyh.dto.QueteDTO;
 import com.data.kanyh.dto.QueteInputDTO;
+import com.data.kanyh.exception.NotFoundException;
 import com.data.kanyh.mapper.QueteMapper;
 import com.data.kanyh.model.Quete;
-import com.data.kanyh.model.StatutQuete;
 import com.data.kanyh.repository.QueteRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -27,10 +25,10 @@ public class QueteService {
                 .toList();
     }
 
-    // TODO : gérer le cas où la quête n'existe pas
     public QueteDTO getQueteById(Long id) {
         return queteRepository.findById(id)
-                .map(queteMapper::toDTO).stream().findFirst().orElseThrow();
+                .map(queteMapper::toDTO)
+                .orElseThrow(() -> new NotFoundException("Quête non trouvée"));
     }
 
     public QueteDTO save(QueteInputDTO input) {
@@ -38,16 +36,17 @@ public class QueteService {
         return queteMapper.toDTO(quete);
     }
 
-    // TODO : gérer le cas où la quête n'existe pas
     public QueteDTO updateQuete(Long id, QueteInputDTO input) {
         Quete quete = queteRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new NotFoundException("Quête non trouvée"));
         queteMapper.updateEntityFromDTO(input, quete);
         return queteMapper.toDTO(queteRepository.save(quete));
     }
 
-    // TODO : gérer le cas où la quête n'existe pas
     public void deleteQuete(Long id) {
+        if (!queteRepository.existsById(id)) {
+            throw new NotFoundException("Quête non trouvée");
+        }
         queteRepository.deleteById(id);
     }
 }
