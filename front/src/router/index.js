@@ -11,7 +11,12 @@ const routes = [
   {
     path: "/ds",
     name: "DS",
-    component: DS, 
+    component: DS,
+  },
+  {
+    path: "/adventurers",
+    name: "AdventurersView",
+    component: AdventurersView,
   },
 ];
 
