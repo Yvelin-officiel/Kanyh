@@ -1,18 +1,17 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DS from "../pages/DS.vue";
-import QuestForm from "../pages/questForm.vue";
-import AdventurersView from "../pages/AdventurersView.vue";
+import QuestDashboard from "../pages/QuestDashboard.vue";
 
 const routes = [
+  {
+    path: "/quest",
+    name: "QuestDashboard",
+    component: QuestDashboard,
+  },
   {
     path: "/ds",
     name: "DS",
     component: DS,
-  },
-  {
-    path: "/quest",
-    name: "QuestForm",
-    component: QuestForm,
   },
   {
     path: "/adventurers",

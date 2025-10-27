@@ -6,6 +6,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class QueteInputDTO {
@@ -28,4 +29,6 @@ public class QueteInputDTO {
 
     @NotBlank(message = "Le statut de la quête ne peut pas être vide")
     private String statut;
+
+    private List<String> specialitesRequisesIds;
 }

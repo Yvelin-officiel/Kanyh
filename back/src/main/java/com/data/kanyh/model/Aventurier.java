@@ -20,6 +20,10 @@ public class Aventurier {
     private String nom;
     private String specialite;
     private int niveauExperience;
+    @ManyToOne
+    @JoinColumn(name = "specialite_id")
+    private Specialite specialite;
+    private int niveau;
     private Number tauxJournalierBase;
     private String disponibilite;
     private LocalDate dateDisponibilite;

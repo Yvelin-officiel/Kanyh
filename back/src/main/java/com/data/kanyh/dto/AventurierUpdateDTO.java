@@ -16,8 +16,8 @@ public class AventurierUpdateDTO {
     @NotBlank(message = "Le nom est obligatoire")
     private String nom;
 
-    @NotBlank(message = "La spécialité est obligatoire")
-    private String specialite;
+    @NotBlank(message = "La spécialité est obligatoire (id)")
+    private String specialiteId;
 
     @NotNull(message = "Le niveau est obligatoire")
     @PositiveOrZero(message = "Le niveau doit être positif ou nul")

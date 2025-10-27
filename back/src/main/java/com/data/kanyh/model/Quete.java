@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "quetes")
@@ -29,5 +30,12 @@ public class Quete {
 
     private Long commanditaireId;
     private Long equipeId;
-}
 
+    @ManyToMany
+    @JoinTable(
+        name = "quete_specialites",
+        joinColumns = @JoinColumn(name = "quete_id"),
+        inverseJoinColumns = @JoinColumn(name = "specialite_id")
+    )
+    private List<Specialite> specialitesRequises;
+}

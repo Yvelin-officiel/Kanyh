@@ -11,8 +11,8 @@ public class AventurierInputDTO {
     @NotBlank(message = "Le nom est obligatoire")
     private String nom;
 
-    @NotBlank(message = "La spécialité est obligatoire")
-    private String specialite;
+    @NotBlank(message = "La spécialité est obligatoire (id)")
+    private String specialiteId;
 
     @NotNull(message = "Le taux journalier de base est obligatoire")
     @PositiveOrZero(message = "Le taux journalier de base doit être supérieur ou égal à zéro")

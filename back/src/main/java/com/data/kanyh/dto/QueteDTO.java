@@ -1,8 +1,10 @@
 package com.data.kanyh.dto;
 
+import com.data.kanyh.model.Specialite;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class QueteDTO {
@@ -16,4 +18,5 @@ public class QueteDTO {
     private String statut;
     private Long commanditaireId;
     private Long equipeId;
+    private List<Specialite> specialitesRequises;
 }

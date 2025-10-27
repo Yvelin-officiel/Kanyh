@@ -1,5 +1,6 @@
 package com.data.kanyh.dto;
 
+import com.data.kanyh.model.Specialite;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ public class AventurierDTO {
 
     private Long id;
     private String nom;
-    private String specialite;
+    private Specialite specialite;
     private int niveauExperience;
     private Number tauxJournalierBase;
     private String disponibilite;
