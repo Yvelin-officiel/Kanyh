@@ -45,7 +45,6 @@ class QueteServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Quete entity
         quete = new Quete();
         quete.setId(1L);
         quete.setNom("Sauver la princesse");
@@ -58,7 +57,6 @@ class QueteServiceTest {
         quete.setCommanditaireId(10L);
         quete.setEquipeId(20L);
 
-        // QueteDTO
         queteDTO = new QueteDTO();
         queteDTO.setId(1L);
         queteDTO.setNom("Sauver la princesse");
@@ -71,7 +69,6 @@ class QueteServiceTest {
         queteDTO.setCommanditaireId(10L);
         queteDTO.setEquipeId(20L);
 
-        // QueteInputDTO
         queteInputDTO = new QueteInputDTO();
         queteInputDTO.setNom("Nouvelle quête");
         queteInputDTO.setDescription("Description de la quête");
@@ -86,7 +83,6 @@ class QueteServiceTest {
     @Test
     @DisplayName("getAllQuetes - Doit retourner toutes les quêtes")
     void getAllQuetes_ShouldReturnAllQuetes() {
-        // Given
         Quete quete2 = new Quete();
         quete2.setId(2L);
         quete2.setNom("Tuer le dragon");
@@ -103,10 +99,8 @@ class QueteServiceTest {
         when(queteMapper.toDTO(quete)).thenReturn(queteDTO);
         when(queteMapper.toDTO(quete2)).thenReturn(queteDTO2);
 
-        // When
         List<QueteDTO> result = queteService.getAllQuetes();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getId()).isEqualTo(1L);
@@ -122,13 +116,10 @@ class QueteServiceTest {
     @Test
     @DisplayName("getAllQuetes - Doit retourner une liste vide si aucune quête")
     void getAllQuetes_ShouldReturnEmptyList_WhenNoQuetes() {
-        // Given
         when(queteRepository.findAll()).thenReturn(List.of());
 
-        // When
         List<QueteDTO> result = queteService.getAllQuetes();
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result).isEmpty();
 
@@ -141,14 +132,11 @@ class QueteServiceTest {
     @Test
     @DisplayName("getQueteById - Doit retourner la quête correspondante")
     void getQueteById_ShouldReturnQuete_WhenIdExists() {
-        // Given
         when(queteRepository.findById(1L)).thenReturn(Optional.of(quete));
         when(queteMapper.toDTO(quete)).thenReturn(queteDTO);
 
-        // When
         QueteDTO result = queteService.getQueteById(1L);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getNom()).isEqualTo("Sauver la princesse");
@@ -161,10 +149,8 @@ class QueteServiceTest {
     @Test
     @DisplayName("getQueteById - Doit lancer NotFoundException si l'ID n'existe pas")
     void getQueteById_ShouldThrowNotFoundException_WhenIdDoesNotExist() {
-        // Given
         when(queteRepository.findById(999L)).thenReturn(Optional.empty());
-
-        // When & Then
+        
         assertThatThrownBy(() -> queteService.getQueteById(999L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("Quête non trouvée");
@@ -178,7 +164,6 @@ class QueteServiceTest {
     @Test
     @DisplayName("save - Doit créer et sauvegarder une nouvelle quête")
     void save_ShouldCreateAndSaveNewQuete() {
-        // Given
         Quete newQuete = new Quete();
         newQuete.setNom("Nouvelle quête");
         newQuete.setDescription("Description de la quête");
@@ -201,10 +186,8 @@ class QueteServiceTest {
         when(queteRepository.save(newQuete)).thenReturn(savedQuete);
         when(queteMapper.toDTO(savedQuete)).thenReturn(savedQueteDTO);
 
-        // When
         QueteDTO result = queteService.save(queteInputDTO);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(2L);
         assertThat(result.getNom()).isEqualTo("Nouvelle quête");
@@ -218,7 +201,6 @@ class QueteServiceTest {
     @Test
     @DisplayName("save - Doit définir le statut à NOUVELLE pour toute nouvelle quête")
     void save_ShouldSetStatusToNouvelle_ForNewQuete() {
-        // Given
         Quete newQuete = new Quete();
         newQuete.setNom("Test");
         newQuete.setStatut(StatutQuete.NOUVELLE);
@@ -231,10 +213,8 @@ class QueteServiceTest {
         when(queteRepository.save(newQuete)).thenReturn(newQuete);
         when(queteMapper.toDTO(newQuete)).thenReturn(savedDTO);
 
-        // When
         QueteDTO result = queteService.save(queteInputDTO);
 
-        // Then
         assertThat(result.getStatut()).isEqualTo("NOUVELLE");
 
         verify(queteMapper, times(1)).toEntity(queteInputDTO);
@@ -246,7 +226,6 @@ class QueteServiceTest {
     @Test
     @DisplayName("updateQuete - Doit mettre à jour une quête existante")
     void updateQuete_ShouldUpdateExistingQuete() {
-        // Given
         QueteInputDTO updateDTO = new QueteInputDTO();
         updateDTO.setNom("Quête mise à jour");
         updateDTO.setDescription("Description mise à jour");
@@ -271,10 +250,8 @@ class QueteServiceTest {
         when(queteRepository.save(quete)).thenReturn(updatedQuete);
         when(queteMapper.toDTO(updatedQuete)).thenReturn(updatedDTO);
 
-        // When
         QueteDTO result = queteService.updateQuete(1L, updateDTO);
 
-        // Then
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(1L);
         assertThat(result.getNom()).isEqualTo("Quête mise à jour");
@@ -290,10 +267,8 @@ class QueteServiceTest {
     @Test
     @DisplayName("updateQuete - Doit lancer NotFoundException si l'ID n'existe pas")
     void updateQuete_ShouldThrowNotFoundException_WhenIdDoesNotExist() {
-        // Given
         when(queteRepository.findById(999L)).thenReturn(Optional.empty());
 
-        // When & Then
         assertThatThrownBy(() -> queteService.updateQuete(999L, queteInputDTO))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("Quête non trouvée");
@@ -306,20 +281,16 @@ class QueteServiceTest {
     @Test
     @DisplayName("updateQuete - Doit permettre une mise à jour partielle")
     void updateQuete_ShouldAllowPartialUpdate() {
-        // Given
         QueteInputDTO partialUpdateDTO = new QueteInputDTO();
         partialUpdateDTO.setNom("Nom modifié");
-        // Les autres champs restent null
 
         when(queteRepository.findById(1L)).thenReturn(Optional.of(quete));
         doNothing().when(queteMapper).updateEntityFromDTO(partialUpdateDTO, quete);
         when(queteRepository.save(quete)).thenReturn(quete);
         when(queteMapper.toDTO(quete)).thenReturn(queteDTO);
 
-        // When
         QueteDTO result = queteService.updateQuete(1L, partialUpdateDTO);
 
-        // Then
         assertThat(result).isNotNull();
 
         verify(queteRepository, times(1)).findById(1L);
@@ -332,14 +303,11 @@ class QueteServiceTest {
     @Test
     @DisplayName("deleteQuete - Doit supprimer une quête existante")
     void deleteQuete_ShouldDeleteExistingQuete() {
-        // Given
         when(queteRepository.existsById(1L)).thenReturn(true);
         doNothing().when(queteRepository).deleteById(1L);
 
-        // When
         queteService.deleteQuete(1L);
 
-        // Then
         verify(queteRepository, times(1)).existsById(1L);
         verify(queteRepository, times(1)).deleteById(1L);
     }
@@ -347,10 +315,8 @@ class QueteServiceTest {
     @Test
     @DisplayName("deleteQuete - Doit lancer NotFoundException si l'ID n'existe pas")
     void deleteQuete_ShouldThrowNotFoundException_WhenIdDoesNotExist() {
-        // Given
         when(queteRepository.existsById(999L)).thenReturn(false);
 
-        // When & Then
         assertThatThrownBy(() -> queteService.deleteQuete(999L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("Quête non trouvée");
@@ -362,15 +328,11 @@ class QueteServiceTest {
     @Test
     @DisplayName("deleteQuete - Doit vérifier l'existence avant de supprimer")
     void deleteQuete_ShouldCheckExistenceBeforeDeleting() {
-        // Given
         when(queteRepository.existsById(1L)).thenReturn(true);
         doNothing().when(queteRepository).deleteById(1L);
 
-        // When
         queteService.deleteQuete(1L);
 
-        // Then
-        // La vérification doit être faite AVANT la suppression
         var inOrder = inOrder(queteRepository);
         inOrder.verify(queteRepository).existsById(1L);
         inOrder.verify(queteRepository).deleteById(1L);

@@ -87,7 +87,6 @@ class QueteMapperTest {
         quete.setDureeEstimee(1);
         quete.setDatePeremption(LocalDate.now());
         quete.setStatut(StatutQuete.NOUVELLE);
-        // experienceGagnee, commanditaireId, equipeId sont null
 
         // When
         QueteDTO dto = queteMapper.toDTO(quete);
@@ -109,20 +108,20 @@ class QueteMapperTest {
         inputDTO.setPrime(2500.0);
         inputDTO.setDureeEstimee(10);
         inputDTO.setDatePeremption(LocalDate.of(2026, 6, 15));
-        inputDTO.setStatut("EN_COURS"); // Ce champ n'est pas utilisé dans le mapper
+        inputDTO.setStatut("EN_COURS");
 
         // When
         Quete quete = queteMapper.toEntity(inputDTO);
 
         // Then
         assertThat(quete).isNotNull();
-        assertThat(quete.getId()).isNull(); // L'ID n'est pas défini lors de la création
+        assertThat(quete.getId()).isNull();
         assertThat(quete.getNom()).isEqualTo("Nouvelle quête");
         assertThat(quete.getDescription()).isEqualTo("Une description passionnante");
         assertThat(quete.getPrime()).isEqualTo(2500.0);
         assertThat(quete.getDureeEstimee()).isEqualTo(10);
         assertThat(quete.getDatePeremption()).isEqualTo(LocalDate.of(2026, 6, 15));
-        assertThat(quete.getStatut()).isEqualTo(StatutQuete.NOUVELLE); // Toujours NOUVELLE
+        assertThat(quete.getStatut()).isEqualTo(StatutQuete.NOUVELLE);
         assertThat(quete.getExperienceGagnee()).isNull();
         assertThat(quete.getCommanditaireId()).isNull();
         assertThat(quete.getEquipeId()).isNull();
@@ -131,26 +130,22 @@ class QueteMapperTest {
     @Test
     @DisplayName("toEntity - Doit toujours définir le statut à NOUVELLE")
     void toEntity_ShouldAlwaysSetStatusToNouvelle() {
-        // Given
         QueteInputDTO inputDTO = new QueteInputDTO();
         inputDTO.setNom("Test");
         inputDTO.setDescription("Test");
         inputDTO.setPrime(100.0);
         inputDTO.setDureeEstimee(1);
         inputDTO.setDatePeremption(LocalDate.now());
-        inputDTO.setStatut("TERMINEE"); // Même si on envoie un autre statut
+        inputDTO.setStatut("TERMINEE");
 
-        // When
         Quete quete = queteMapper.toEntity(inputDTO);
 
-        // Then
         assertThat(quete.getStatut()).isEqualTo(StatutQuete.NOUVELLE);
     }
 
     @Test
     @DisplayName("updateEntityFromDTO - Doit mettre à jour tous les champs non-null")
     void updateEntityFromDTO_ShouldUpdateAllNonNullFields() {
-        // Given
         Quete existingQuete = new Quete();
         existingQuete.setId(1L);
         existingQuete.setNom("Ancien nom");
@@ -167,23 +162,20 @@ class QueteMapperTest {
         updateDTO.setDureeEstimee(7);
         updateDTO.setDatePeremption(LocalDate.of(2025, 12, 31));
 
-        // When
         queteMapper.updateEntityFromDTO(updateDTO, existingQuete);
 
-        // Then
-        assertThat(existingQuete.getId()).isEqualTo(1L); // L'ID ne change pas
+        assertThat(existingQuete.getId()).isEqualTo(1L);
         assertThat(existingQuete.getNom()).isEqualTo("Nouveau nom");
         assertThat(existingQuete.getDescription()).isEqualTo("Nouvelle description");
         assertThat(existingQuete.getPrime()).isEqualTo(1500.0);
         assertThat(existingQuete.getDureeEstimee()).isEqualTo(7);
         assertThat(existingQuete.getDatePeremption()).isEqualTo(LocalDate.of(2025, 12, 31));
-        assertThat(existingQuete.getStatut()).isEqualTo(StatutQuete.EN_COURS); // Le statut ne change pas
+        assertThat(existingQuete.getStatut()).isEqualTo(StatutQuete.EN_COURS);
     }
 
     @Test
     @DisplayName("updateEntityFromDTO - Ne doit pas mettre à jour les champs null (mise à jour partielle)")
     void updateEntityFromDTO_ShouldNotUpdateNullFields_PartialUpdate() {
-        // Given
         Quete existingQuete = new Quete();
         existingQuete.setId(1L);
         existingQuete.setNom("Ancien nom");
@@ -194,23 +186,18 @@ class QueteMapperTest {
 
         QueteInputDTO partialUpdateDTO = new QueteInputDTO();
         partialUpdateDTO.setNom("Nom mis à jour");
-        // Tous les autres champs restent null
-
-        // When
         queteMapper.updateEntityFromDTO(partialUpdateDTO, existingQuete);
 
-        // Then
         assertThat(existingQuete.getNom()).isEqualTo("Nom mis à jour"); // Mis à jour
-        assertThat(existingQuete.getDescription()).isEqualTo("Ancienne description"); // Inchangé
-        assertThat(existingQuete.getPrime()).isEqualTo(500.0); // Inchangé
-        assertThat(existingQuete.getDureeEstimee()).isEqualTo(3); // Inchangé
-        assertThat(existingQuete.getDatePeremption()).isEqualTo(LocalDate.of(2025, 1, 1)); // Inchangé
+        assertThat(existingQuete.getDescription()).isEqualTo("Ancienne description");
+        assertThat(existingQuete.getPrime()).isEqualTo(500.0);
+        assertThat(existingQuete.getDureeEstimee()).isEqualTo(3);
+        assertThat(existingQuete.getDatePeremption()).isEqualTo(LocalDate.of(2025, 1, 1));
     }
 
     @Test
     @DisplayName("updateEntityFromDTO - Ne doit rien modifier si tous les champs sont null")
     void updateEntityFromDTO_ShouldNotModifyEntity_WhenAllFieldsAreNull() {
-        // Given
         Quete existingQuete = new Quete();
         existingQuete.setId(1L);
         existingQuete.setNom("Original");
@@ -220,12 +207,9 @@ class QueteMapperTest {
         existingQuete.setDatePeremption(LocalDate.of(2025, 6, 1));
 
         QueteInputDTO emptyUpdateDTO = new QueteInputDTO();
-        // Tous les champs sont null
 
-        // When
         queteMapper.updateEntityFromDTO(emptyUpdateDTO, existingQuete);
 
-        // Then
         assertThat(existingQuete.getNom()).isEqualTo("Original");
         assertThat(existingQuete.getDescription()).isEqualTo("Original description");
         assertThat(existingQuete.getPrime()).isEqualTo(1000.0);
@@ -236,7 +220,6 @@ class QueteMapperTest {
     @Test
     @DisplayName("updateEntityFromDTO - Doit permettre la mise à jour sélective de plusieurs champs")
     void updateEntityFromDTO_ShouldUpdateMultipleSelectedFields() {
-        // Given
         Quete existingQuete = new Quete();
         existingQuete.setId(1L);
         existingQuete.setNom("Quête 1");
@@ -246,17 +229,15 @@ class QueteMapperTest {
         existingQuete.setDatePeremption(LocalDate.of(2025, 3, 1));
 
         QueteInputDTO updateDTO = new QueteInputDTO();
-        updateDTO.setPrime(500.0); // Seule la prime et la durée sont mises à jour
+        updateDTO.setPrime(500.0);
         updateDTO.setDureeEstimee(8);
 
-        // When
         queteMapper.updateEntityFromDTO(updateDTO, existingQuete);
 
-        // Then
-        assertThat(existingQuete.getNom()).isEqualTo("Quête 1"); // Inchangé
-        assertThat(existingQuete.getDescription()).isEqualTo("Description 1"); // Inchangé
-        assertThat(existingQuete.getPrime()).isEqualTo(500.0); // Mis à jour
-        assertThat(existingQuete.getDureeEstimee()).isEqualTo(8); // Mis à jour
-        assertThat(existingQuete.getDatePeremption()).isEqualTo(LocalDate.of(2025, 3, 1)); // Inchangé
+        assertThat(existingQuete.getNom()).isEqualTo("Quête 1");
+        assertThat(existingQuete.getDescription()).isEqualTo("Description 1");
+        assertThat(existingQuete.getPrime()).isEqualTo(500.0);
+        assertThat(existingQuete.getDureeEstimee()).isEqualTo(8);
+        assertThat(existingQuete.getDatePeremption()).isEqualTo(LocalDate.of(2025, 3, 1));
     }
 }
