@@ -20,4 +20,7 @@ public class QueteInputDTO {
 
     @NotNull
     private LocalDate datePeremption;
+
+    @NotNull
+    private String statut;
 }
