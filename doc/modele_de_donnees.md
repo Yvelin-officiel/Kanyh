@@ -1,8 +1,5 @@
 ```mermaid
 erDiagram
-    %% ============================
-    %% 🗡️ REQUETES / MISSIONS
-    %% ============================
     REQUETE {
         int id
         string nom
@@ -16,9 +13,6 @@ erDiagram
         int equipe_id
     }
 
-    %% ============================
-    %% 🧑‍💼 COMMANDITAIRE
-    %% ============================
     COMMANDITAIRE {
         int id
         string nom
@@ -26,9 +20,6 @@ erDiagram
         string adresse
     }
 
-    %% ============================
-    %% 🧑‍🤝‍🧑 EQUIPE
-    %% ============================
     EQUIPE {
         int id
         string nom
@@ -38,9 +29,6 @@ erDiagram
         float ratio_rentabilite
     }
 
-    %% ============================
-    %% 🧙 AVENTURIER
-    %% ============================
     AVENTURIER {
         int id
         string nom
@@ -51,9 +39,6 @@ erDiagram
         date date_disponibilite
     }
 
-    %% ============================
-    %% 🔗 PARTICIPATION EQUIPE
-    %% ============================
     PARTICIPATION_EQUIPE {
         int id
         int equipe_id
@@ -65,9 +50,6 @@ erDiagram
         int gain_experience
     }
 
-    %% ============================
-    %% ⚙️ EQUIPEMENT
-    %% ============================
     EQUIPEMENT {
         int id
         string nom
@@ -78,22 +60,26 @@ erDiagram
         date date_retour_prevue
         float cout_reparation
     }
+     
+    CONSOMMABLE {
+        int id
+        string nom
+        int quantite
+        date date_retour_prevue
+        float prix
+    }
 
-    %% ============================
-    %% 🔗 UTILISATION D'EQUIPEMENT
-    %% ============================
     UTILISATION_EQUIP {
         int id
         int equipe_id
         int equipement_id
+        int consommable_id
+        int consommable_quantite
         date date_debut
         date date_fin
         string etat_retour
     }
 
-    %% ============================
-    %% 🧾 TRANSACTION
-    %% ============================
     TRANSACTION {
         int id
         string type
@@ -105,26 +91,22 @@ erDiagram
         int equipement_id
     }
 
-    %% ============================
-    %% 💰 COMPTE GUILDE
-    %% ============================
     COMPTE_GUILDE {
         int id
         float solde_total
         datetime date_mise_a_jour
     }
 
-    %% ============================
-    %% RELATIONS
-    %% ============================
     COMMANDITAIRE ||--o{ REQUETE : "soumet"
     REQUETE ||--|| EQUIPE : "attribue à"
     EQUIPE ||--o{ PARTICIPATION_EQUIPE : "compose"
     AVENTURIER ||--o{ PARTICIPATION_EQUIPE : "participe à"
     EQUIPE ||--o{ UTILISATION_EQUIP : "utilise"
     EQUIPEMENT ||--o{ UTILISATION_EQUIP : "est emprunté"
+    CONSOMMABLE ||--o{ UTILISATION_EQUIP : "est emprunté"
     AVENTURIER ||--o{ TRANSACTION : "rémunéré via"
     EQUIPEMENT ||--o{ TRANSACTION : "lié à"
+    CONSOMMABLE ||--o{ TRANSACTION : "lié à"
     REQUETE ||--o{ TRANSACTION : "génère"
     COMPTE_GUILDE ||--o{ TRANSACTION : "enregistre"
 ```
