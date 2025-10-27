@@ -12,7 +12,6 @@ public class KanyhApplication {
     public static void main(String[] args) {
         SpringApplication.run(KanyhApplication.class, args);
     }
-
     @Bean
     public WebMvcConfigurer forwardToSwaggerUi() {
         return new WebMvcConfigurer() {
