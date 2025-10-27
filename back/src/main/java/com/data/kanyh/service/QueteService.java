@@ -18,6 +18,7 @@ public class QueteService {
 
     private final QueteRepository queteRepository;
     private final QueteMapper queteMapper;
+    private static final String NOT_FOUND = "Quête non trouvée";
 
     public List<QueteDTO> getAllQuetes() {
         return queteRepository.findAll().stream()
@@ -28,7 +29,7 @@ public class QueteService {
     public QueteDTO getQueteById(Long id) {
         return queteRepository.findById(id)
                 .map(queteMapper::toDTO)
-                .orElseThrow(() -> new NotFoundException("Quête non trouvée"));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND));
     }
 
     public QueteDTO save(QueteInputDTO input) {
@@ -38,14 +39,14 @@ public class QueteService {
 
     public QueteDTO updateQuete(Long id, QueteInputDTO input) {
         Quete quete = queteRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Quête non trouvée"));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND));
         queteMapper.updateEntityFromDTO(input, quete);
         return queteMapper.toDTO(queteRepository.save(quete));
     }
 
     public void deleteQuete(Long id) {
         if (!queteRepository.existsById(id)) {
-            throw new NotFoundException("Quête non trouvée");
+            throw new NotFoundException(NOT_FOUND);
         }
         queteRepository.deleteById(id);
     }
