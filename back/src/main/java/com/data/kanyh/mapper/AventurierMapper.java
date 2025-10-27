@@ -9,6 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class AventurierMapper {
 
+    /**
+     * Convertit une entité Aventurier en DTO.
+     *
+     * @param aventurier l'entité Aventurier à convertir
+     * @return le DTO contenant les données de l'aventurier
+     */
     public AventurierDTO toDTO(Aventurier aventurier) {
         AventurierDTO dto = new AventurierDTO();
         dto.setId(aventurier.getId());
@@ -21,20 +27,32 @@ public class AventurierMapper {
         return dto;
     }
 
+    /**
+     * Convertit un DTO d'entrée en entité Aventurier.
+     *
+     * @param dto le DTO contenant les données pour créer un aventurier
+     * @return l'entité Aventurier nouvellement créée
+     */
     public Aventurier toEntity(AventurierInputDTO dto) {
         Aventurier aventurier = new Aventurier();
         aventurier.setNom(dto.getNom());
         aventurier.setSpecialite(dto.getSpecialite());
-        aventurier.setTauxJournalierBase(dto.getTauxJournalierBase().doubleValue());
+        aventurier.setTauxJournalierBase(dto.getTauxJournalierBase());
         return aventurier;
     }
 
-    public void updateEntityFromDTO(AventurierUpdateDTO dto, Aventurier entity) {
-        entity.setNom(dto.getNom());
-        entity.setSpecialite(dto.getSpecialite());
-        entity.setNiveau(dto.getNiveauExperience());
-        entity.setTauxJournalierBase(dto.getTauxJournalierBase());
-        entity.setDisponibilite(dto.getDisponibilite());
-        entity.setDateDebut(dto.getDateDisponibilite());
+    /**
+     * Met à jour une entité Aventurier existante avec les données d'un DTO de mise à jour.
+     *
+     * @param dto        le DTO contenant les nouvelles données
+     * @param aventurier l'entité Aventurier à mettre à jour
+     */
+    public void updateEntityFromDTO(AventurierUpdateDTO dto, Aventurier aventurier) {
+        aventurier.setNom(dto.getNom());
+        aventurier.setSpecialite(dto.getSpecialite());
+        aventurier.setNiveau(dto.getNiveauExperience());
+        aventurier.setTauxJournalierBase(dto.getTauxJournalierBase());
+        aventurier.setDisponibilite(dto.getDisponibilite());
+        aventurier.setDateDebut(dto.getDateDisponibilite());
     }
 }

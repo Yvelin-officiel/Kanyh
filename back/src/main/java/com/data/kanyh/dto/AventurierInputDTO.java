@@ -15,7 +15,7 @@ public class AventurierInputDTO {
     private String specialite;
 
     @NotNull(message = "Le taux journalier de base est obligatoire")
-    @PositiveOrZero(message = "Le taux journalier de base doit être supérieur à zéro")
+    @PositiveOrZero(message = "Le taux journalier de base doit être supérieur ou égal à zéro")
     private Number tauxJournalierBase;
 
 }
