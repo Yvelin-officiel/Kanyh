@@ -20,23 +20,56 @@ public class QueteService {
     private final QueteMapper queteMapper;
     private static final String NOT_FOUND = "Quête non trouvée";
 
+    /**
+     * Récupère toutes les quêtes disponibles.
+     * @return une liste de {@link QueteDTO} contenant toutes les quêtes
+     */
     public List<QueteDTO> getAllQuetes() {
         return queteRepository.findAll().stream()
                 .map(queteMapper::toDTO)
                 .toList();
     }
 
+    /**
+     * Récupère une quête par son identifiant.
+     * @param id l'identifiant de la quête à récupérer
+     * @return le {@link QueteDTO} correspondant à l'identifiant fourni
+     * @throws NotFoundException si aucune quête n'existe avec cet identifiant
+     */
     public QueteDTO getQueteById(Long id) {
         return queteRepository.findById(id)
                 .map(queteMapper::toDTO)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND));
     }
 
+    /**
+     * Crée et sauvegarde une nouvelle quête.
+     * <p>
+     * Le statut de la quête créée est automatiquement défini à {@code NOUVELLE}
+     * par le mapper, indépendamment du statut fourni dans le DTO d'entrée.
+     * </p>
+     *
+     * @param input le {@link QueteInputDTO} contenant les informations de la quête à créer
+     * @return le {@link QueteDTO} de la quête créée avec son identifiant généré
+     */
     public QueteDTO save(QueteInputDTO input) {
         Quete quete = queteRepository.save(queteMapper.toEntity(input));
         return queteMapper.toDTO(quete);
     }
 
+    /**
+     * Met à jour une quête existante.
+     * <p>
+     * Cette méthode effectue une mise à jour partielle : seuls les champs non-null
+     * du DTO d'entrée sont appliqués à l'entité existante. Les autres champs conservent
+     * leur valeur actuelle.
+     * </p>
+     *
+     * @param id l'identifiant de la quête à mettre à jour
+     * @param input le {@link QueteInputDTO} contenant les nouvelles valeurs
+     * @return le {@link QueteDTO} de la quête mise à jour
+     * @throws NotFoundException si aucune quête n'existe avec cet identifiant
+     */
     public QueteDTO updateQuete(Long id, QueteInputDTO input) {
         Quete quete = queteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND));
@@ -44,6 +77,15 @@ public class QueteService {
         return queteMapper.toDTO(queteRepository.save(quete));
     }
 
+    /**
+     * Supprime une quête existante.
+     * <p>
+     * Vérifie d'abord l'existence de la quête avant de procéder à la suppression.
+     * </p>
+     *
+     * @param id l'identifiant de la quête à supprimer
+     * @throws NotFoundException si aucune quête n'existe avec cet identifiant
+     */
     public void deleteQuete(Long id) {
         if (!queteRepository.existsById(id)) {
             throw new NotFoundException(NOT_FOUND);
