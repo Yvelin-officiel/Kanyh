@@ -3,7 +3,7 @@
     <div class="max-w-7xl mx-auto">
       <!-- En-tête -->
       <header class="mb-8 text-center">
-        <h1 class="titre text-primary mb-2">Liste des Aventuriers</h1>
+        <h1 class="titre text-secondary mb-2">Liste des Aventuriers</h1>
       </header>
 
       <!-- Filtres et recherche -->
