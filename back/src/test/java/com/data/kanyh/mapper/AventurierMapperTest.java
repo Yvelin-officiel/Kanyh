@@ -26,20 +26,20 @@ public class AventurierMapperTest {
         aventurier.setId(1L);
         aventurier.setNom("Jean Dupont");
         aventurier.setSpecialite("Java");
-        aventurier.setNiveau(5);
+        aventurier.setNiveauExperience(5);
         aventurier.setTauxJournalierBase(500.0);
         aventurier.setDisponibilite("Aujourd'hui");
-        aventurier.setDateDebut(LocalDate.of(2024, 1, 1));
+        aventurier.setDateDisponibilite(LocalDate.of(2024, 1, 1));
 
         AventurierDTO result = aventurierMapper.toDTO(aventurier);
 
         assertEquals(1L, result.getId());
         assertEquals("Jean Dupont", result.getNom());
         assertEquals("Java", result.getSpecialite());
-        assertEquals(5, result.getNiveau());
+        assertEquals(5, result.getNiveauExperience());
         assertEquals(500.0, result.getTauxJournalierBase());
         assertEquals("Aujourd'hui", result.getDisponibilite());
-        assertEquals(LocalDate.of(2024, 1, 1), result.getDateDebut());
+        assertEquals(LocalDate.of(2024, 1, 1), result.getDateDisponibilite());
     }
 
     @Test
@@ -77,9 +77,9 @@ public class AventurierMapperTest {
         assertEquals(1L, entity.getId());
         assertEquals("Nouveau Nom", entity.getNom());
         assertEquals("Nouvelle Spécialité", entity.getSpecialite());
-        assertEquals(7, entity.getNiveau());
+        assertEquals(7, entity.getNiveauExperience());
         assertEquals(700.0, entity.getTauxJournalierBase());
         assertEquals("Aujourd'hui", entity.getDisponibilite());
-        assertEquals(LocalDate.of(2024, 6, 1), entity.getDateDebut());
+        assertEquals(LocalDate.of(2024, 6, 1), entity.getDateDisponibilite());
     }
 }

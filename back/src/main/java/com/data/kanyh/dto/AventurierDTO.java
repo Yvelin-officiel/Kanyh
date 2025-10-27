@@ -10,8 +10,8 @@ public class AventurierDTO {
     private Long id;
     private String nom;
     private String specialite;
-    private int niveau;
+    private int niveauExperience;
     private Number tauxJournalierBase;
     private String disponibilite;
-    private LocalDate dateDebut;
+    private LocalDate dateDisponibilite;
 }
