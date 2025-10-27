@@ -12,7 +12,6 @@ public class KanyhApplication {
     public static void main(String[] args) {
         SpringApplication.run(KanyhApplication.class, args);
     }
-
     @Bean
     public WebMvcConfigurer forwardToSwaggerUi() {
         return new WebMvcConfigurer() {
@@ -22,15 +21,5 @@ public class KanyhApplication {
             }
         };
     }
-
-	@Bean
-	public WebMvcConfigurer forwardToSwaggerUi() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addViewControllers(ViewControllerRegistry registry) {
-				registry.addRedirectViewController("/", "/swagger-ui/index.html");
-			}
-		};
-	}
 
 }
