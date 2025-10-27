@@ -24,11 +24,22 @@ public class AventurierService {
         this.aventurierMapper = aventurierMapper;
     }
 
+    /**
+     * Crée et enregistre un nouvel aventurier.
+     *
+     * @param dto les données de l'aventurier à créer
+     * @return le DTO de l'aventurier créé
+     */
     public AventurierDTO save(AventurierInputDTO dto) {
         Aventurier aventurier = aventurierRepository.save(aventurierMapper.toEntity(dto));
         return aventurierMapper.toDTO(aventurier);
     }
 
+    /**
+     * Récupère la liste de tous les aventuriers.
+     *
+     * @return la liste des DTOs de tous les aventuriers
+     */
     public List<AventurierDTO> getAllAventurier() {
         return aventurierRepository.findAll()
                 .stream()
@@ -36,12 +47,26 @@ public class AventurierService {
                 .toList();
     }
 
+    /**
+     * Récupère un aventurier par son id.
+     *
+     * @param id l'identifiant de l'aventurier
+     * @return le DTO de l'aventurier trouvé
+     * @throws NotFoundException si l'aventurier n'existe pas
+     */
     public AventurierDTO getAventurierById(Long id) {
         return aventurierRepository.findById(id)
                 .map(aventurierMapper::toDTO)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND));
     }
 
+    /**
+     * Met à jour un aventurier existant.
+     *
+     * @param dto les nouvelles données de l'aventurier
+     * @return le DTO de l'aventurier mis à jour
+     * @throws NotFoundException si l'aventurier n'existe pas
+     */
     public AventurierDTO update(AventurierUpdateDTO dto) {
         Aventurier aventurier = aventurierRepository.findById(dto.getId())
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND));
@@ -50,6 +75,12 @@ public class AventurierService {
         return aventurierMapper.toDTO(updated);
     }
 
+    /**
+     * Supprime un aventurier par son id.
+     *
+     * @param id l'identifiant de l'aventurier à supprimer
+     * @throws NotFoundException si l'aventurier n'existe pas
+     */
     public void delete(Long id) {
         if (!aventurierRepository.existsById(id)) {
             throw new NotFoundException(NOT_FOUND);
