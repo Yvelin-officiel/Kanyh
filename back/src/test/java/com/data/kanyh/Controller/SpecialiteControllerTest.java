@@ -1,6 +1,6 @@
 package com.data.kanyh.Controller;
 
-import com.data.kanyh.Controller.SpecialiteController;
+import com.data.kanyh.controller.SpecialiteController;
 import com.data.kanyh.model.Specialite;
 import com.data.kanyh.service.SpecialiteService;
 import org.junit.jupiter.api.Test;

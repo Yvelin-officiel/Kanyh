@@ -4,10 +4,16 @@ import com.data.kanyh.dto.AventurierDTO;
 import com.data.kanyh.dto.AventurierInputDTO;
 import com.data.kanyh.dto.AventurierUpdateDTO;
 import com.data.kanyh.model.Aventurier;
+import com.data.kanyh.model.Specialite;
+import com.data.kanyh.repository.SpecialiteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AventurierMapper {
+
+    @Autowired
+    private SpecialiteRepository specialiteRepository;
 
     /**
      * Convertit une entité Aventurier en DTO.
@@ -36,7 +42,11 @@ public class AventurierMapper {
     public Aventurier toEntity(AventurierInputDTO dto) {
         Aventurier aventurier = new Aventurier();
         aventurier.setNom(dto.getNom());
-        aventurier.setSpecialite(dto.getSpecialite());
+
+        Specialite specialite = specialiteRepository.findById(Integer.parseInt(dto.getSpecialiteId()))
+                .orElseThrow(() -> new RuntimeException("Specialite non trouvée avec l'id: " + dto.getSpecialiteId()));
+        aventurier.setSpecialite(specialite);
+
         aventurier.setTauxJournalierBase(dto.getTauxJournalierBase());
         return aventurier;
     }
@@ -49,7 +59,11 @@ public class AventurierMapper {
      */
     public void updateEntityFromDTO(AventurierUpdateDTO dto, Aventurier aventurier) {
         aventurier.setNom(dto.getNom());
-        aventurier.setSpecialite(dto.getSpecialite());
+
+        Specialite specialite = specialiteRepository.findById(Integer.parseInt(dto.getSpecialiteId()))
+                .orElseThrow(() -> new RuntimeException("Specialite non trouvée avec l'id: " + dto.getSpecialiteId()));
+        aventurier.setSpecialite(specialite);
+
         aventurier.setNiveau(dto.getNiveauExperience());
         aventurier.setTauxJournalierBase(dto.getTauxJournalierBase());
         aventurier.setDisponibilite(dto.getDisponibilite());
