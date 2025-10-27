@@ -16,6 +16,7 @@ tags:
   - name: Equipements
   - name: Transactions
   - name: Compte
+  - name: Specialites
 
 paths:
 
@@ -422,6 +423,88 @@ paths:
         '500':
           description: Erreur serveur interne
 
+  /specialite:
+    get:
+      tags: [Specialites]
+      summary: Liste toutes les spécialités
+      responses:
+        '200':
+          description: Liste des spécialités
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Specialite'
+        '500':
+          description: Erreur serveur interne
+
+    post:
+      tags: [Specialites]
+      summary: Crée une nouvelle spécialité
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecialiteInput'
+      responses:
+        '200':
+          description: Spécialité créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Specialite'
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur interne
+
+  /specialite/{id}:
+    put:
+      tags: [Specialites]
+      summary: Met à jour une spécialité
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecialiteInput'
+      responses:
+        '200':
+          description: Spécialité mise à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Specialite'
+        '400':
+          description: Données invalides
+        '404':
+          description: Spécialité non trouvée
+        '500':
+          description: Erreur serveur interne
+
+    delete:
+      tags: [Specialites]
+      summary: Supprime une spécialité
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Spécialité supprimée avec succès
+        '404':
+          description: Spécialité non trouvée
+        '500':
+          description: Erreur serveur interne
+
 components:
   schemas:
 
@@ -438,23 +521,34 @@ components:
         statut: { type: string, enum: [nouvelle, en_cours, terminee, rejetee] }
         commanditaire_id: { type: integer }
         equipe_id: { type: integer, nullable: true }
+        specialites_requises:
+          type: array
+          items:
+            $ref: '#/components/schemas/Specialite'
 
     QueteInput:
       type: object
-      required: [nom, description, prime, duree_estimee, date_peremption]
+      required: [nom, description, prime, duree_estimee, date_peremption, statut]
       properties:
         nom: { type: string }
         description: { type: string }
         prime: { type: number }
         duree_estimee: { type: integer }
         date_peremption: { type: string, format: date }
+        statut: { type: string }
+        specialites_requises_ids:
+          type: array
+          items:
+            type: string
+          description: Liste des IDs des spécialités requises
 
     Aventurier:
       type: object
       properties:
         id: { type: integer }
         nom: { type: string }
-        specialite: { type: string }
+        specialite:
+          $ref: '#/components/schemas/Specialite'
         niveau_experience: { type: integer }
         taux_journalier_base: { type: number }
         disponibilite: { type: string }
@@ -462,10 +556,12 @@ components:
 
     AventurierInput:
       type: object
-      required: [nom, specialite, taux_journalier_base]
+      required: [nom, specialite_id, taux_journalier_base]
       properties:
         nom: { type: string }
-        specialite: { type: string }
+        specialite_id:
+          type: string
+          description: ID de la spécialité de l'aventurier
         taux_journalier_base: { type: number }
 
     Equipe:
@@ -532,3 +628,15 @@ components:
             optimiste: { type: number }
             realiste: { type: number }
             pessimiste: { type: number }
+
+    Specialite:
+      type: object
+      properties:
+        id: { type: integer }
+        nom: { type: string }
+
+    SpecialiteInput:
+      type: object
+      required: [nom]
+      properties:
+        nom: { type: string }
