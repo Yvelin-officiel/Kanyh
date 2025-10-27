@@ -1,6 +1,6 @@
-package repository;
+package com.data.kanyh.repository;
 
-import model.Specialite;
+import com.data.kanyh.model.Specialite;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
