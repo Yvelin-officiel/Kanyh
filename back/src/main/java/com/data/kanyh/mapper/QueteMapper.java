@@ -4,10 +4,20 @@ package com.data.kanyh.mapper;
 import com.data.kanyh.dto.QueteDTO;
 import com.data.kanyh.dto.QueteInputDTO;
 import com.data.kanyh.model.Quete;
+import com.data.kanyh.model.Specialite;
+import com.data.kanyh.repository.SpecialiteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class QueteMapper {
+
+    @Autowired
+    private SpecialiteRepository specialiteRepository;
 
     /**
      * Convertit une entité {@link Quete} en {@link QueteDTO}.
@@ -26,6 +36,7 @@ public class QueteMapper {
         dto.setStatut(quete.getStatut().name());
         dto.setCommanditaireId(quete.getCommanditaireId());
         dto.setEquipeId(quete.getEquipeId());
+        dto.setSpecialitesRequises(quete.getSpecialitesRequises());
         return dto;
     }
 
@@ -45,6 +56,18 @@ public class QueteMapper {
         quete.setDureeEstimee(input.getDureeEstimee());
         quete.setDatePeremption(input.getDatePeremption());
         quete.setStatut(com.data.kanyh.model.StatutQuete.NOUVELLE);
+
+        // Convertir les IDs de spécialités en objets Specialite
+        if (input.getSpecialitesRequisesIds() != null && !input.getSpecialitesRequisesIds().isEmpty()) {
+            List<Specialite> specialites = input.getSpecialitesRequisesIds().stream()
+                    .map(id -> specialiteRepository.findById(Integer.parseInt(id))
+                            .orElseThrow(() -> new RuntimeException("Specialite non trouvée avec l'id: " + id)))
+                    .collect(Collectors.toList());
+            quete.setSpecialitesRequises(specialites);
+        } else {
+            quete.setSpecialitesRequises(new ArrayList<>());
+        }
+
         return quete;
     }
 
@@ -71,6 +94,15 @@ public class QueteMapper {
         }
         if (dto.getDatePeremption() != null) {
             entity.setDatePeremption(dto.getDatePeremption());
+        }
+
+        // Mettre à jour les spécialités requises si fournies
+        if (dto.getSpecialitesRequisesIds() != null) {
+            List<Specialite> specialites = dto.getSpecialitesRequisesIds().stream()
+                    .map(id -> specialiteRepository.findById(Integer.parseInt(id))
+                            .orElseThrow(() -> new RuntimeException("Specialite non trouvée avec l'id: " + id)))
+                    .collect(Collectors.toList());
+            entity.setSpecialitesRequises(specialites);
         }
     }
 }

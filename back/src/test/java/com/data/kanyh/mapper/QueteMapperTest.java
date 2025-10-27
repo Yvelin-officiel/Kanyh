@@ -3,24 +3,34 @@ package com.data.kanyh.mapper;
 import com.data.kanyh.dto.QueteDTO;
 import com.data.kanyh.dto.QueteInputDTO;
 import com.data.kanyh.model.Quete;
+import com.data.kanyh.model.Specialite;
 import com.data.kanyh.model.StatutQuete;
-import org.junit.jupiter.api.BeforeEach;
+import com.data.kanyh.repository.SpecialiteRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayName("QueteMapper - Tests unitaires")
 class QueteMapperTest {
 
-    private QueteMapper queteMapper;
+    @Mock
+    private SpecialiteRepository specialiteRepository;
 
-    @BeforeEach
-    void setUp() {
-        queteMapper = new QueteMapper();
-    }
+    @InjectMocks
+    private QueteMapper queteMapper;
 
     @Test
     @DisplayName("toDTO - Doit convertir une entité Quete en QueteDTO avec tous les champs")
@@ -109,6 +119,7 @@ class QueteMapperTest {
         inputDTO.setDureeEstimee(10);
         inputDTO.setDatePeremption(LocalDate.of(2026, 6, 15));
         inputDTO.setStatut("EN_COURS");
+        inputDTO.setSpecialitesRequisesIds(null);
 
         // When
         Quete quete = queteMapper.toEntity(inputDTO);
@@ -122,6 +133,7 @@ class QueteMapperTest {
         assertThat(quete.getDureeEstimee()).isEqualTo(10);
         assertThat(quete.getDatePeremption()).isEqualTo(LocalDate.of(2026, 6, 15));
         assertThat(quete.getStatut()).isEqualTo(StatutQuete.NOUVELLE);
+        assertThat(quete.getSpecialitesRequises()).isEmpty();
         assertThat(quete.getExperienceGagnee()).isNull();
         assertThat(quete.getCommanditaireId()).isNull();
         assertThat(quete.getEquipeId()).isNull();
@@ -239,5 +251,121 @@ class QueteMapperTest {
         assertThat(existingQuete.getPrime()).isEqualTo(500.0);
         assertThat(existingQuete.getDureeEstimee()).isEqualTo(8);
         assertThat(existingQuete.getDatePeremption()).isEqualTo(LocalDate.of(2025, 3, 1));
+    }
+
+    @Test
+    @DisplayName("toEntity - Doit convertir les IDs de spécialités en objets Specialite")
+    void toEntity_ShouldConvertSpecialiteIdsToSpecialiteObjects() {
+        QueteInputDTO inputDTO = new QueteInputDTO();
+        inputDTO.setNom("Quête avec spécialités");
+        inputDTO.setDescription("Description");
+        inputDTO.setPrime(1000.0);
+        inputDTO.setDureeEstimee(5);
+        inputDTO.setDatePeremption(LocalDate.of(2025, 12, 31));
+        inputDTO.setStatut("NOUVELLE");
+        inputDTO.setSpecialitesRequisesIds(Arrays.asList("1", "2"));
+
+        Specialite specialite1 = new Specialite(1, "Archer");
+        Specialite specialite2 = new Specialite(2, "Guerrier");
+
+        when(specialiteRepository.findById(1)).thenReturn(Optional.of(specialite1));
+        when(specialiteRepository.findById(2)).thenReturn(Optional.of(specialite2));
+
+        Quete quete = queteMapper.toEntity(inputDTO);
+
+        assertThat(quete.getSpecialitesRequises()).isNotNull();
+        assertThat(quete.getSpecialitesRequises()).hasSize(2);
+        assertThat(quete.getSpecialitesRequises()).containsExactly(specialite1, specialite2);
+    }
+
+    @Test
+    @DisplayName("toEntity - Doit créer une liste vide quand specialitesRequisesIds est vide")
+    void toEntity_ShouldCreateEmptyList_WhenSpecialitesRequisesIdsIsEmpty() {
+        QueteInputDTO inputDTO = new QueteInputDTO();
+        inputDTO.setNom("Quête sans spécialités");
+        inputDTO.setDescription("Description");
+        inputDTO.setPrime(1000.0);
+        inputDTO.setDureeEstimee(5);
+        inputDTO.setDatePeremption(LocalDate.of(2025, 12, 31));
+        inputDTO.setStatut("NOUVELLE");
+        inputDTO.setSpecialitesRequisesIds(Arrays.asList());
+
+        Quete quete = queteMapper.toEntity(inputDTO);
+
+        assertThat(quete.getSpecialitesRequises()).isNotNull();
+        assertThat(quete.getSpecialitesRequises()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("toEntity - Doit lancer une exception quand une spécialité n'existe pas")
+    void toEntity_ShouldThrowException_WhenSpecialiteNotFound() {
+        QueteInputDTO inputDTO = new QueteInputDTO();
+        inputDTO.setNom("Quête avec spécialité invalide");
+        inputDTO.setDescription("Description");
+        inputDTO.setPrime(1000.0);
+        inputDTO.setDureeEstimee(5);
+        inputDTO.setDatePeremption(LocalDate.of(2025, 12, 31));
+        inputDTO.setStatut("NOUVELLE");
+        inputDTO.setSpecialitesRequisesIds(Arrays.asList("999"));
+
+        when(specialiteRepository.findById(999)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> queteMapper.toEntity(inputDTO))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Specialite non trouvée avec l'id: 999");
+    }
+
+    @Test
+    @DisplayName("updateEntityFromDTO - Doit mettre à jour les spécialités requises")
+    void updateEntityFromDTO_ShouldUpdateSpecialitesRequises() {
+        Specialite oldSpecialite = new Specialite(1, "Archer");
+        Quete existingQuete = new Quete();
+        existingQuete.setId(1L);
+        existingQuete.setNom("Quête existante");
+        existingQuete.setDescription("Description");
+        existingQuete.setPrime(500.0);
+        existingQuete.setDureeEstimee(3);
+        existingQuete.setDatePeremption(LocalDate.of(2025, 1, 1));
+        existingQuete.setSpecialitesRequises(Arrays.asList(oldSpecialite));
+
+        QueteInputDTO updateDTO = new QueteInputDTO();
+        updateDTO.setSpecialitesRequisesIds(Arrays.asList("2", "3"));
+
+        Specialite specialite2 = new Specialite(2, "Guerrier");
+        Specialite specialite3 = new Specialite(3, "Dermatologie");
+
+        when(specialiteRepository.findById(2)).thenReturn(Optional.of(specialite2));
+        when(specialiteRepository.findById(3)).thenReturn(Optional.of(specialite3));
+
+        queteMapper.updateEntityFromDTO(updateDTO, existingQuete);
+
+        assertThat(existingQuete.getSpecialitesRequises()).isNotNull();
+        assertThat(existingQuete.getSpecialitesRequises()).hasSize(2);
+        assertThat(existingQuete.getSpecialitesRequises()).containsExactly(specialite2, specialite3);
+    }
+
+    @Test
+    @DisplayName("updateEntityFromDTO - Ne doit pas modifier les spécialités si specialitesRequisesIds est null")
+    void updateEntityFromDTO_ShouldNotUpdateSpecialites_WhenSpecialitesRequisesIdsIsNull() {
+        Specialite specialite = new Specialite(1, "Archer");
+        List<Specialite> originalSpecialites = Arrays.asList(specialite);
+
+        Quete existingQuete = new Quete();
+        existingQuete.setId(1L);
+        existingQuete.setNom("Quête existante");
+        existingQuete.setDescription("Description");
+        existingQuete.setPrime(500.0);
+        existingQuete.setDureeEstimee(3);
+        existingQuete.setDatePeremption(LocalDate.of(2025, 1, 1));
+        existingQuete.setSpecialitesRequises(originalSpecialites);
+
+        QueteInputDTO updateDTO = new QueteInputDTO();
+        updateDTO.setNom("Nouveau nom");
+        updateDTO.setSpecialitesRequisesIds(null);
+
+        queteMapper.updateEntityFromDTO(updateDTO, existingQuete);
+
+        assertThat(existingQuete.getNom()).isEqualTo("Nouveau nom");
+        assertThat(existingQuete.getSpecialitesRequises()).isEqualTo(originalSpecialites);
     }
 }
