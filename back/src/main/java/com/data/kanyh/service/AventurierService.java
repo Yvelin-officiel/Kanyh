@@ -7,6 +7,8 @@ import com.data.kanyh.model.Aventurier;
 import com.data.kanyh.repository.AventurierRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AventurierService {
 
@@ -19,8 +21,20 @@ public class AventurierService {
     }
 
     public AventurierDTO save(AventurierInputDTO dto) {
-        Aventurier entity = aventurierMapper.toEntity(dto);
-        Aventurier aventurier = aventurierRepository.save(entity);
+        Aventurier aventurier = aventurierRepository.save(aventurierMapper.toEntity(dto));
         return aventurierMapper.toDTO(aventurier);
     }
+
+    public List<AventurierDTO> getAllAventurier() {
+        return aventurierRepository.findAll()
+                .stream()
+                .map(aventurierMapper::toDTO)
+                .toList();
+    }
+
+    // TODO : exception NotFound
+    public AventurierDTO getAventurierById(Long id) {
+        return aventurierRepository.findById(id).map(aventurierMapper::toDTO).orElseThrow();
+    }
+
 }
