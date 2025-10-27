@@ -17,6 +17,8 @@ public class AventurierService {
     private final AventurierRepository aventurierRepository;
     private final AventurierMapper aventurierMapper;
 
+    private static final String NOT_FOUND = "Aventurier non trouvé";
+
     public AventurierService(AventurierRepository aventurierRepository, AventurierMapper aventurierMapper) {
         this.aventurierRepository = aventurierRepository;
         this.aventurierMapper = aventurierMapper;
@@ -37,12 +39,12 @@ public class AventurierService {
     public AventurierDTO getAventurierById(Long id) {
         return aventurierRepository.findById(id)
                 .map(aventurierMapper::toDTO)
-                .orElseThrow(() -> new NotFoundException("Aventurier non trouvé"));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND));
     }
 
     public AventurierDTO update(AventurierUpdateDTO dto) {
         Aventurier aventurier = aventurierRepository.findById(dto.getId())
-                .orElseThrow(() -> new NotFoundException("Aventurier non trouvé"));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND));
         aventurierMapper.updateEntityFromDTO(dto, aventurier);
         Aventurier updated = aventurierRepository.save(aventurier);
         return aventurierMapper.toDTO(updated);
@@ -50,7 +52,7 @@ public class AventurierService {
 
     public void delete(Long id) {
         if (!aventurierRepository.existsById(id)) {
-            throw new NotFoundException("Aventurier non trouvé");
+            throw new NotFoundException(NOT_FOUND);
         }
         aventurierRepository.deleteById(id);
     }

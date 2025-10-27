@@ -25,7 +25,7 @@ public class AventurierMapper {
         Aventurier aventurier = new Aventurier();
         aventurier.setNom(dto.getNom());
         aventurier.setSpecialite(dto.getSpecialite());
-        aventurier.setTauxJournalierBase(dto.getTauxJournalierBase().doubleValue());
+        aventurier.setTauxJournalierBase(dto.getTauxJournalierBase());
         return aventurier;
     }
 
