@@ -26,10 +26,10 @@ public class AventurierMapper {
         dto.setId(aventurier.getId());
         dto.setNom(aventurier.getNom());
         dto.setSpecialite(aventurier.getSpecialite());
-        dto.setNiveau(aventurier.getNiveau());
+        dto.setNiveauExperience(aventurier.getNiveauExperience());
         dto.setTauxJournalierBase(aventurier.getTauxJournalierBase());
         dto.setDisponibilite(aventurier.getDisponibilite());
-        dto.setDateDebut(aventurier.getDateDebut());
+        dto.setDateDisponibilite(aventurier.getDateDisponibilite());
         return dto;
     }
 
@@ -59,14 +59,12 @@ public class AventurierMapper {
      */
     public void updateEntityFromDTO(AventurierUpdateDTO dto, Aventurier aventurier) {
         aventurier.setNom(dto.getNom());
-
         Specialite specialite = specialiteRepository.findById(Integer.parseInt(dto.getSpecialiteId()))
                 .orElseThrow(() -> new RuntimeException("Specialite non trouvée avec l'id: " + dto.getSpecialiteId()));
         aventurier.setSpecialite(specialite);
-
-        aventurier.setNiveau(dto.getNiveauExperience());
+        aventurier.setNiveauExperience(dto.getNiveauExperience());
         aventurier.setTauxJournalierBase(dto.getTauxJournalierBase());
         aventurier.setDisponibilite(dto.getDisponibilite());
-        aventurier.setDateDebut(dto.getDateDisponibilite());
+        aventurier.setDateDisponibilite(dto.getDateDisponibilite());
     }
 }
