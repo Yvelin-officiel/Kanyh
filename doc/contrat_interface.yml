@@ -1,22 +1,35 @@
 openapi: 3.0.3
 info:
   title: API - Guilde des Capuches d'Opale
-  version: 1.1.0
+  version: 2.0.0
   description: >
-    API REST pour la gestion des quêtes, aventuriers, équipes, équipements et transactions
-    du projet *Les Capuches d'Opale*.
+    API REST pour la gestion complète de la Guilde des Capuches d'Opale.
+
+    Cette API permet de gérer :
+    - Les quêtes et leurs commanditaires
+    - Les aventuriers et leurs spécialités
+    - Les équipes et leurs participations (via table de liaison)
+    - Les équipements et consommables
+    - Les transactions financières et le compte de la guilde
+    - Les utilisateurs avec gestion des rôles (Admin, Assistant, Commanditaire)
+
+    Version 2.0 : Refonte majeure avec table de liaison ParticipationEquipe et ajout de la gestion des utilisateurs.
 
 servers:
   - url: http://localhost:8080/v1
 
 tags:
   - name: Quetes
+  - name: Commanditaires
   - name: Aventuriers
   - name: Equipes
+  - name: Participations
   - name: Equipements
+  - name: Consommables
   - name: Transactions
   - name: Compte
   - name: Specialites
+  - name: Utilisateurs
 
 paths:
 
@@ -114,6 +127,103 @@ paths:
           description: Quête supprimée
         '404':
           description: Quête non trouvée
+        '500':
+          description: Erreur serveur interne
+
+  /commanditaires:
+    get:
+      tags: [Commanditaires]
+      summary: Liste tous les commanditaires
+      responses:
+        '200':
+          description: Liste des commanditaires
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Commanditaire'
+        '500':
+          description: Erreur serveur interne
+
+    post:
+      tags: [Commanditaires]
+      summary: Crée un nouveau commanditaire
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommanditaireInput'
+      responses:
+        '201':
+          description: Commanditaire créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Commanditaire'
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur interne
+
+  /commanditaires/{id}:
+    get:
+      tags: [Commanditaires]
+      summary: Récupère un commanditaire par son ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Commanditaire trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Commanditaire'
+        '404':
+          description: Commanditaire non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    put:
+      tags: [Commanditaires]
+      summary: Met à jour un commanditaire
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommanditaireInput'
+      responses:
+        '200':
+          description: Commanditaire mis à jour
+        '400':
+          description: Données invalides
+        '404':
+          description: Commanditaire non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    delete:
+      tags: [Commanditaires]
+      summary: Supprime un commanditaire
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Commanditaire supprimé
+        '404':
+          description: Commanditaire non trouvé
         '500':
           description: Erreur serveur interne
 
@@ -298,6 +408,204 @@ paths:
           description: Équipe supprimée
         '404':
           description: Équipe non trouvée
+        '500':
+          description: Erreur serveur interne
+
+  /participations/create:
+    post:
+      tags: [Participations]
+      summary: Crée une participation d'un aventurier à une équipe
+      description: Permet d'associer un aventurier à une équipe avec des informations de participation (rôle, dates, état, etc.)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParticipationEquipeInput'
+      responses:
+        '200':
+          description: Participation créée avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipationEquipe'
+        '400':
+          description: Données invalides
+        '404':
+          description: Équipe ou aventurier non trouvé
+        '500':
+          description: Erreur serveur interne
+
+  /participations/equipe/{equipeId}:
+    get:
+      tags: [Participations]
+      summary: Récupère toutes les participations d'une équipe
+      parameters:
+        - name: equipeId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Liste des participations de l'équipe
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParticipationEquipe'
+        '500':
+          description: Erreur serveur interne
+
+  /participations/aventurier/{aventurierId}:
+    get:
+      tags: [Participations]
+      summary: Récupère toutes les participations d'un aventurier
+      parameters:
+        - name: aventurierId
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Liste des participations de l'aventurier
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParticipationEquipe'
+        '500':
+          description: Erreur serveur interne
+
+  /participations/aventuriers-disponibles:
+    get:
+      tags: [Participations]
+      summary: Récupère tous les aventuriers disponibles sur une période
+      description: Retourne la liste des aventuriers qui n'ont pas de participation chevauchant la période demandée
+      parameters:
+        - name: dateDebut
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Date de début de la période (format YYYY-MM-DD)
+        - name: dateFin
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          description: Date de fin de la période (format YYYY-MM-DD)
+      responses:
+        '200':
+          description: Liste des aventuriers disponibles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Aventurier'
+        '400':
+          description: Paramètres de date invalides
+        '500':
+          description: Erreur serveur interne
+
+  /consommables:
+    get:
+      tags: [Consommables]
+      summary: Liste tous les consommables
+      responses:
+        '200':
+          description: Liste des consommables
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Consommable'
+        '500':
+          description: Erreur serveur interne
+
+    post:
+      tags: [Consommables]
+      summary: Crée un nouveau consommable
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsommableInput'
+      responses:
+        '201':
+          description: Consommable créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consommable'
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur interne
+
+  /consommables/{id}:
+    get:
+      tags: [Consommables]
+      summary: Récupère un consommable par son ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Consommable trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consommable'
+        '404':
+          description: Consommable non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    put:
+      tags: [Consommables]
+      summary: Met à jour un consommable
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsommableInput'
+      responses:
+        '200':
+          description: Consommable mis à jour
+        '400':
+          description: Données invalides
+        '404':
+          description: Consommable non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    delete:
+      tags: [Consommables]
+      summary: Supprime un consommable
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Consommable supprimé
+        '404':
+          description: Consommable non trouvé
         '500':
           description: Erreur serveur interne
 
@@ -505,6 +813,129 @@ paths:
         '500':
           description: Erreur serveur interne
 
+  /utilisateurs:
+    get:
+      tags: [Utilisateurs]
+      summary: Liste tous les utilisateurs
+      responses:
+        '200':
+          description: Liste des utilisateurs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Utilisateur'
+        '500':
+          description: Erreur serveur interne
+
+    post:
+      tags: [Utilisateurs]
+      summary: Crée un nouvel utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilisateurInput'
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '400':
+          description: Données invalides
+        '500':
+          description: Erreur serveur interne
+
+  /utilisateurs/{id}:
+    get:
+      tags: [Utilisateurs]
+      summary: Récupère un utilisateur par son ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '200':
+          description: Utilisateur trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '404':
+          description: Utilisateur non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    put:
+      tags: [Utilisateurs]
+      summary: Met à jour un utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilisateurInput'
+      responses:
+        '200':
+          description: Utilisateur mis à jour
+        '400':
+          description: Données invalides
+        '404':
+          description: Utilisateur non trouvé
+        '500':
+          description: Erreur serveur interne
+
+    delete:
+      tags: [Utilisateurs]
+      summary: Supprime un utilisateur
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        '204':
+          description: Utilisateur supprimé
+        '404':
+          description: Utilisateur non trouvé
+        '500':
+          description: Erreur serveur interne
+
+  /utilisateurs/login:
+    post:
+      tags: [Utilisateurs]
+      summary: Authentifie un utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: Authentification réussie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '401':
+          description: Identifiants invalides
+        '500':
+          description: Erreur serveur interne
+
 components:
   schemas:
 
@@ -573,20 +1004,17 @@ components:
         date_retour_prevue: { type: string, format: date }
         cout_total: { type: number }
         ratio_rentabilite: { type: number }
-        aventuriers:
+        participations:
           type: array
           items:
-            $ref: '#/components/schemas/Aventurier'
+            $ref: '#/components/schemas/ParticipationEquipe'
 
     EquipeInput:
       type: object
-      required: [nom, aventuriers]
+      required: [nom]
       properties:
         nom: { type: string }
-        aventuriers:
-          type: array
-          items:
-            type: integer
+        description: Crée une équipe vide. Les aventuriers doivent être ajoutés via /participations/create
 
     Equipement:
       type: object
@@ -640,3 +1068,172 @@ components:
       required: [nom]
       properties:
         nom: { type: string }
+
+    Commanditaire:
+      type: object
+      properties:
+        id: { type: integer }
+        nom: { type: string }
+        contact: { type: string }
+        adresse: { type: string }
+        utilisateur_id:
+          type: integer
+          nullable: true
+          description: ID de l'utilisateur lié au commanditaire (si le commanditaire a un compte)
+
+    CommanditaireInput:
+      type: object
+      required: [nom, contact]
+      properties:
+        nom: { type: string }
+        contact: { type: string }
+        adresse: { type: string }
+        utilisateur_id:
+          type: integer
+          nullable: true
+
+    ParticipationEquipe:
+      type: object
+      properties:
+        id: { type: integer }
+        equipe_id: { type: integer }
+        equipe_nom: { type: string }
+        aventurier_id: { type: integer }
+        aventurier_nom: { type: string }
+        date_affectation: { type: string, format: date }
+        date_retour:
+          type: string
+          format: date
+          nullable: true
+        etat:
+          type: string
+          enum: [en_attente, en_cours, termine, annule]
+          description: "État de la participation"
+        gain_experience:
+          type: integer
+          description: "Expérience gagnée lors de cette participation"
+
+    ParticipationEquipeInput:
+      type: object
+      required: [equipe_id, aventurier_id, date_affectation]
+      properties:
+        equipe_id: { type: integer }
+        aventurier_id: { type: integer }
+        date_affectation: { type: string, format: date }
+        date_retour:
+          type: string
+          format: date
+          nullable: true
+        etat:
+          type: string
+          enum: [en_attente, en_cours, termine, annule]
+          default: en_attente
+        gain_experience:
+          type: integer
+          default: 0
+
+    Consommable:
+      type: object
+      properties:
+        id: { type: integer }
+        nom: { type: string }
+        quantite: { type: integer }
+        date_retour_prevue:
+          type: string
+          format: date
+          nullable: true
+        prix: { type: number }
+
+    ConsommableInput:
+      type: object
+      required: [nom, quantite, prix]
+      properties:
+        nom: { type: string }
+        quantite: { type: integer }
+        date_retour_prevue:
+          type: string
+          format: date
+          nullable: true
+        prix: { type: number }
+
+    UtilisationEquipement:
+      type: object
+      properties:
+        id: { type: integer }
+        equipe_id: { type: integer }
+        equipement_id:
+          type: integer
+          nullable: true
+        consommable_id:
+          type: integer
+          nullable: true
+        consommable_quantite:
+          type: integer
+          nullable: true
+        date_debut: { type: string, format: date }
+        date_fin:
+          type: string
+          format: date
+          nullable: true
+        etat_retour:
+          type: string
+          enum: [bon, endommage, perdu]
+          nullable: true
+
+    UtilisationEquipementInput:
+      type: object
+      required: [equipe_id, date_debut]
+      properties:
+        equipe_id: { type: integer }
+        equipement_id:
+          type: integer
+          nullable: true
+        consommable_id:
+          type: integer
+          nullable: true
+        consommable_quantite:
+          type: integer
+          nullable: true
+        date_debut: { type: string, format: date }
+        date_fin:
+          type: string
+          format: date
+          nullable: true
+        etat_retour:
+          type: string
+          enum: [bon, endommage, perdu]
+
+    Utilisateur:
+      type: object
+      properties:
+        id: { type: integer }
+        nom: { type: string }
+        prenom: { type: string }
+        email: { type: string, format: email }
+        role:
+          type: string
+          enum: [admin, assistant, commanditaire]
+          description: |
+            - admin: Administrateur avec tous les droits
+            - assistant: Personne qui désigne les aventuriers pour les équipes et quêtes
+            - commanditaire: Client qui soumet des quêtes
+        date_creation: { type: string, format: date-time }
+        actif: { type: boolean, default: true }
+
+    UtilisateurInput:
+      type: object
+      required: [nom, prenom, email, password, role]
+      properties:
+        nom: { type: string }
+        prenom: { type: string }
+        email: { type: string, format: email }
+        password:
+          type: string
+          format: password
+          description: Mot de passe (sera hashé côté serveur)
+        role:
+          type: string
+          enum: [admin, assistant, commanditaire]
+        actif:
+          type: boolean
+          default: true

@@ -6,7 +6,6 @@ import com.data.kanyh.exception.NotFoundException;
 import com.data.kanyh.mapper.EquipeMapper;
 import com.data.kanyh.model.Aventurier;
 import com.data.kanyh.model.Equipe;
-import com.data.kanyh.repository.AventurierRepository;
 import com.data.kanyh.repository.EquipeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,9 +32,6 @@ class EquipeServiceTest {
 
     @Mock
     private EquipeRepository equipeRepository;
-
-    @Mock
-    private AventurierRepository aventurierRepository;
 
     @Mock
     private EquipeMapper equipeMapper;
@@ -66,7 +62,6 @@ class EquipeServiceTest {
         equipe.setDateRetourPrevue(LocalDate.of(2025, 2, 1));
         equipe.setCoutTotal(10000.0);
         equipe.setRatioRentabilite(1.5);
-        equipe.setAventuriers(Arrays.asList(aventurier1, aventurier2));
 
         equipeDTO = new EquipeDTO();
         equipeDTO.setId(1L);
@@ -78,7 +73,6 @@ class EquipeServiceTest {
 
         equipeInputDTO = new EquipeInputDTO();
         equipeInputDTO.setNom("Nouvelle Équipe");
-        equipeInputDTO.setAventuriers(Arrays.asList(1L, 2L));
     }
 
     // ========== Tests pour getAllEquipes() ==========
@@ -169,20 +163,16 @@ class EquipeServiceTest {
     void save_ShouldCreateAndSaveNewEquipe() {
         Equipe newEquipe = new Equipe();
         newEquipe.setNom("Nouvelle Équipe");
-        newEquipe.setAventuriers(Arrays.asList(aventurier1, aventurier2));
 
         Equipe savedEquipe = new Equipe();
         savedEquipe.setId(2L);
         savedEquipe.setNom("Nouvelle Équipe");
-        savedEquipe.setAventuriers(Arrays.asList(aventurier1, aventurier2));
 
         EquipeDTO savedEquipeDTO = new EquipeDTO();
         savedEquipeDTO.setId(2L);
         savedEquipeDTO.setNom("Nouvelle Équipe");
 
-        when(aventurierRepository.findById(1L)).thenReturn(Optional.of(aventurier1));
-        when(aventurierRepository.findById(2L)).thenReturn(Optional.of(aventurier2));
-        when(equipeMapper.toEntity(eq(equipeInputDTO), any())).thenReturn(newEquipe);
+        when(equipeMapper.toEntity(equipeInputDTO)).thenReturn(newEquipe);
         when(equipeRepository.save(newEquipe)).thenReturn(savedEquipe);
         when(equipeMapper.toDTO(savedEquipe)).thenReturn(savedEquipeDTO);
 
@@ -192,26 +182,9 @@ class EquipeServiceTest {
         assertThat(result.getId()).isEqualTo(2L);
         assertThat(result.getNom()).isEqualTo("Nouvelle Équipe");
 
-        verify(aventurierRepository, times(1)).findById(1L);
-        verify(aventurierRepository, times(1)).findById(2L);
-        verify(equipeMapper, times(1)).toEntity(eq(equipeInputDTO), any());
+        verify(equipeMapper, times(1)).toEntity(equipeInputDTO);
         verify(equipeRepository, times(1)).save(newEquipe);
         verify(equipeMapper, times(1)).toDTO(savedEquipe);
-    }
-
-    @Test
-    @DisplayName("save - Doit lancer NotFoundException si un aventurier n'existe pas")
-    void save_ShouldThrowNotFoundException_WhenAventurierDoesNotExist() {
-        when(aventurierRepository.findById(1L)).thenReturn(Optional.of(aventurier1));
-        when(aventurierRepository.findById(2L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> equipeService.save(equipeInputDTO))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessage("Un ou plusieurs aventuriers non trouvés");
-
-        verify(aventurierRepository, times(1)).findById(1L);
-        verify(aventurierRepository, times(1)).findById(2L);
-        verify(equipeRepository, never()).save(any());
     }
 
     // ========== Tests pour updateEquipe() ==========
@@ -221,7 +194,6 @@ class EquipeServiceTest {
     void updateEquipe_ShouldUpdateExistingEquipe() {
         EquipeInputDTO updateDTO = new EquipeInputDTO();
         updateDTO.setNom("Équipe Mise à Jour");
-        updateDTO.setAventuriers(List.of(1L));
 
         Equipe updatedEquipe = new Equipe();
         updatedEquipe.setId(1L);
@@ -232,8 +204,7 @@ class EquipeServiceTest {
         updatedDTO.setNom("Équipe Mise à Jour");
 
         when(equipeRepository.findById(1L)).thenReturn(Optional.of(equipe));
-        when(aventurierRepository.findById(1L)).thenReturn(Optional.of(aventurier1));
-        doNothing().when(equipeMapper).updateEntityFromDTO(eq(updateDTO), eq(equipe), any());
+        doNothing().when(equipeMapper).updateEntityFromDTO(updateDTO, equipe);
         when(equipeRepository.save(equipe)).thenReturn(updatedEquipe);
         when(equipeMapper.toDTO(updatedEquipe)).thenReturn(updatedDTO);
 
@@ -244,8 +215,7 @@ class EquipeServiceTest {
         assertThat(result.getNom()).isEqualTo("Équipe Mise à Jour");
 
         verify(equipeRepository, times(1)).findById(1L);
-        verify(aventurierRepository, times(1)).findById(1L);
-        verify(equipeMapper, times(1)).updateEntityFromDTO(eq(updateDTO), eq(equipe), any());
+        verify(equipeMapper, times(1)).updateEntityFromDTO(updateDTO, equipe);
         verify(equipeRepository, times(1)).save(equipe);
         verify(equipeMapper, times(1)).toDTO(updatedEquipe);
     }
@@ -260,26 +230,7 @@ class EquipeServiceTest {
                 .hasMessage("Équipe non trouvée");
 
         verify(equipeRepository, times(1)).findById(999L);
-        verify(aventurierRepository, never()).findById(any());
-        verify(equipeMapper, never()).updateEntityFromDTO(any(), any(), any());
-        verify(equipeRepository, never()).save(any());
-    }
-
-    @Test
-    @DisplayName("updateEquipe - Doit lancer NotFoundException si un aventurier n'existe pas")
-    void updateEquipe_ShouldThrowNotFoundException_WhenAventurierDoesNotExist() {
-        when(equipeRepository.findById(1L)).thenReturn(Optional.of(equipe));
-        when(aventurierRepository.findById(1L)).thenReturn(Optional.of(aventurier1));
-        when(aventurierRepository.findById(2L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> equipeService.updateEquipe(1L, equipeInputDTO))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessage("Un ou plusieurs aventuriers non trouvés");
-
-        verify(equipeRepository, times(1)).findById(1L);
-        verify(aventurierRepository, times(1)).findById(1L);
-        verify(aventurierRepository, times(1)).findById(2L);
-        verify(equipeMapper, never()).updateEntityFromDTO(any(), any(), any());
+        verify(equipeMapper, never()).updateEntityFromDTO(any(), any());
         verify(equipeRepository, never()).save(any());
     }
 

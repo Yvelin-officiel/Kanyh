@@ -14,5 +14,5 @@ public class EquipeDTO {
     private LocalDate dateRetourPrevue;
     private Double coutTotal;
     private Double ratioRentabilite;
-    private List<AventurierDTO> aventuriers;
+    private List<ParticipationEquipeDTO> participations;
 }

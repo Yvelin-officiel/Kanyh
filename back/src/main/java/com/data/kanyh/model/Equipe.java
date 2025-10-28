@@ -26,11 +26,6 @@ public class Equipe {
     private Double coutTotal;
     private Double ratioRentabilite;
 
-    @ManyToMany
-    @JoinTable(
-            name = "equipe_aventurier",
-            joinColumns = @JoinColumn(name = "equipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "aventurier_id")
-    )
-    private List<Aventurier> aventuriers = new ArrayList<>();
+    @OneToMany(mappedBy = "equipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ParticipationEquipe> participations = new ArrayList<>();
 }
