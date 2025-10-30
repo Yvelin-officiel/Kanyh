@@ -74,8 +74,80 @@
             </div>
         </section>
 
-        <!-- Section Présentation -->
+        <!-- Section Guilde -->
         <section class="max-w-7xl mx-auto px-6 py-20">
+            <div class="bg-white/95 rounded-2xl shadow-2xl border-2 border-primary/30 overflow-hidden mb-20">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Image -->
+                    <div class="relative h-[400px] lg:h-auto overflow-hidden">
+                        <img 
+                            src="../assets/images/image_intéressante.jpg" 
+                            alt="Guilde des Aventuriers" 
+                            class="w-full h-full object-cover"
+                        />
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/20"></div>
+                    </div>
+
+                    <!-- Texte -->
+                    <div class="p-8 lg:p-12 flex flex-col justify-center">
+                        <div class="text-center lg:text-left space-y-6">
+                            <!-- Icône et titre -->
+                            <div class="flex items-center justify-center lg:justify-start gap-3">
+                                <span class="text-5xl">🛡️</span>
+                                <h2 class="text-4xl font-cinzel text-primary-dark">Rejoignez la Guilde</h2>
+                            </div>
+
+                            <!-- Séparateur -->
+                            <div class="h-1 w-32 bg-gradient-to-r from-primary to-transparent rounded-full mx-auto lg:mx-0"></div>
+
+                            <!-- Texte principal -->
+                            <div class="space-y-4 text-txt-primary font-inter text-lg">
+                                <p class="leading-relaxed">
+                                    Au sein des <span class="font-cinzel font-bold text-primary-dark">Capuches d'Opale</span>, 
+                                    vous ne serez jamais seul face aux dangers. Notre guilde est bien plus qu'une simple organisation : 
+                                    c'est une <span class="font-bold text-secondary-dark">fraternité</span> où se tissent les liens les plus forts.
+                                </p>
+                                
+                                <p class="leading-relaxed">
+                                    Ici, chaque aventurier trouve des <span class="font-bold">frères et sœurs d'armes</span> prêts 
+                                    à combattre à ses côtés. Les quêtes partagées forgent des amitiés éternelles, et les victoires 
+                                    remportées ensemble deviennent des <span class="italic text-primary">légendes</span> que l'on 
+                                    raconte au coin du feu.
+                                </p>
+
+                                <p class="leading-relaxed">
+                                    Que vous soyez un guerrier aguerri, un mage érudit ou un archer furtif, vous trouverez votre 
+                                    place parmi nous. Ensemble, nous sommes <span class="font-cinzel font-bold text-secondary-dark">invincibles</span>.
+                                </p>
+                            </div>
+
+                            <!-- Points clés -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">🤝</span>
+                                    <span class="font-cinzel text-txt-primary">Alliances durables</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">⚔️</span>
+                                    <span class="font-cinzel text-txt-primary">Quêtes en équipe</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">🎖️</span>
+                                    <span class="font-cinzel text-txt-primary">Honneur partagé</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">🏆</span>
+                                    <span class="font-cinzel text-txt-primary">Gloire collective</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Présentation -->
+        <section class="max-w-7xl mx-auto px-6 pb-20">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Carte 1 -->
                 <div class="feature-card bg-white/95 rounded-2xl shadow-lg border-2 border-primary/30 p-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
@@ -83,7 +155,7 @@
                         <div class="text-6xl mb-4">📋</div>
                         <h3 class="text-2xl font-cinzel text-primary-dark">Quêtes Épiques</h3>
                         <p class="text-txt-secondary font-inter">
-                            Découvrez et gérez des quêtes légendaires. Créez, suivez et accomplissez des missions extraordinaires.
+                            Proposez vos quêtes ou participez à celles proposées par la communauté.
                         </p>
                     </div>
                 </div>
@@ -94,7 +166,7 @@
                         <div class="text-6xl mb-4">⚔️</div>
                         <h3 class="text-2xl font-cinzel text-secondary-dark">Aventuriers</h3>
                         <p class="text-txt-secondary font-inter">
-                            Recrutez des héros courageux et formez des équipes de choc pour vos aventures.
+                           Rejoignez des héros courageux et formez des équipes de choc pour vos aventures.
                         </p>
                     </div>
                 </div>
