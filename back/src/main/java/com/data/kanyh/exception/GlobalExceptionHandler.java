@@ -6,7 +6,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -15,19 +20,29 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
         Class<?> dtoClass = Objects.requireNonNull(ex.getBindingResult().getTarget()).getClass();
 
-        java.util.List<String> fieldOrder = java.util.Arrays.stream(dtoClass.getDeclaredFields())
-                .map(java.lang.reflect.Field::getName)
+        List<String> fieldOrder = Arrays.stream(dtoClass.getDeclaredFields())
+                .map(Field::getName)
                 .toList();
 
         String message = ex.getBindingResult().getFieldErrors().stream()
-                .sorted(java.util.Comparator.comparingInt(e -> fieldOrder.indexOf(e.getField())))
+                .sorted(Comparator.comparingInt(e -> fieldOrder.indexOf(e.getField())))
                 .map(error -> error.getField() + " : " + error.getDefaultMessage())
-                .collect(java.util.stream.Collectors.joining("\n"));
+                .collect(Collectors.joining("\n"));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<String> handleNotFound(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AlreadyExists.class)
+    public ResponseEntity<String> handleNotFound(AlreadyExists ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidCredentials.class)
+    public ResponseEntity<String> handleInvalidCredentials(InvalidCredentials ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 }
