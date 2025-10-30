@@ -80,7 +80,8 @@
                                     id="modal-prime"
                                     v-model.number="formData.prime"
                                     type="number"
-                                    placeholder="1000"
+                                    step="0.1"
+                                    placeholder="1000.50"
                                     class="input-field"
                                     min="0"
                                     required

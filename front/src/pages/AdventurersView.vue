@@ -58,8 +58,13 @@
             <label class="text-sm font-cinzel text-txt-primary mb-2 flex items-center gap-2">
               <span>⚔️</span> Spécialité
             </label>
-            <input v-model="filters.specialite" type="text" placeholder="Guerrier, Mage..."
-              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" />
+            <select v-model="filters.specialite"
+              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm">
+              <option value="">Toutes les spécialités</option>
+              <option v-for="specialite in specialites" :key="specialite.id" :value="specialite.nom">
+                {{ specialite.nom }}
+              </option>
+            </select>
           </div>
 
           <!-- Recherche par niveau -->
@@ -195,6 +200,7 @@
 <script>
 import { ref, onMounted, computed } from 'vue';
 import { getAdventurers } from '../services/adventurersService';
+import { fetchSpecialties } from '../services/SpecialiteService';
 import AddAdventurerModal from '../components/AddAdventurerModal.vue';
 import Navbar from '../components/Navbar.vue';
 
@@ -206,6 +212,7 @@ export default {
   },
   setup() {
     const adventurers = ref([]);
+    const specialites = ref([]);
     const loading = ref(false);
     const error = ref(null);
     const isAddModalOpen = ref(false);
@@ -234,6 +241,15 @@ export default {
       }
     };
 
+    // Charger les spécialités
+    const loadSpecialities = async () => {
+      try {
+        specialites.value = await fetchSpecialties();
+      } catch (err) {
+        console.error('Erreur lors du chargement des spécialités:', err);
+      }
+    };
+
     // Filtrer et trier les aventuriers
     const filteredAdventurers = computed(() => {
       let result = [...adventurers.value];
@@ -248,7 +264,7 @@ export default {
       // Filtrer par spécialité
       if (filters.value.specialite) {
         result = result.filter(adv =>
-          adv.specialite.toLowerCase().includes(filters.value.specialite.toLowerCase())
+          adv.specialite === filters.value.specialite
         );
       }
 
@@ -337,10 +353,12 @@ export default {
     // Charger les données au montage du composant
     onMounted(() => {
       loadAdventurers();
+      loadSpecialities();
     });
 
     return {
       adventurers,
+      specialites,
       loading,
       error,
       filters,

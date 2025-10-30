@@ -68,14 +68,13 @@
                                     required
                                 >
                                     <option value="" disabled>Choisir une spécialité</option>
-                                    <option value="Guerrier">⚔️ Guerrier</option>
-                                    <option value="Mage">🔮 Mage</option>
-                                    <option value="Archer">🏹 Archer</option>
-                                    <option value="Rôdeur">🌲 Rôdeur</option>
-                                    <option value="Voleur">🗝️ Voleur</option>
-                                    <option value="Paladin">✨ Paladin</option>
-                                    <option value="Druide">🍃 Druide</option>
-                                    <option value="Barde">🎵 Barde</option>
+                                    <option 
+                                        v-for="specialite in specialites" 
+                                        :key="specialite.id" 
+                                        :value="specialite.nom"
+                                    >
+                                        {{ getSpecialiteIcon(specialite.nom) }} {{ specialite.nom }}
+                                    </option>
                                 </select>
                             </div>
 
@@ -134,8 +133,9 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { createAdventurer } from '../services/adventurersService';
+import { fetchSpecialties } from '../services/SpecialiteService';
 
 export default {
     name: 'AddAdventurerModal',
@@ -155,6 +155,32 @@ export default {
 
         const isSubmitting = ref(false);
         const error = ref('');
+        const specialites = ref([]);
+
+        // Icônes pour chaque spécialité
+        const specialiteIcons = {
+            'Guerrier': '⚔️',
+            'Mage': '🔮',
+            'Archer': '🏹',
+            'Rôdeur': '🌲',
+            'Voleur': '🗝️',
+            'Paladin': '✨',
+            'Druide': '🍃',
+            'Barde': '🎵'
+        };
+
+        const getSpecialiteIcon = (nom) => {
+            return specialiteIcons[nom] || '⚔️';
+        };
+
+        // Charger les spécialités au montage
+        onMounted(async () => {
+            try {
+                specialites.value = await fetchSpecialties();
+            } catch (err) {
+                console.error('Erreur lors du chargement des spécialités:', err);
+            }
+        });
 
         // Réinitialiser l'erreur quand la modal s'ouvre
         watch(() => props.isOpen, (newValue) => {
@@ -197,8 +223,10 @@ export default {
             formData,
             isSubmitting,
             error,
+            specialites,
             closeModal,
             handleSubmit,
+            getSpecialiteIcon,
         };
     }
 };

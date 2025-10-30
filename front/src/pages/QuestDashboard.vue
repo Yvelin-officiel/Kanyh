@@ -48,7 +48,7 @@
             />
 
             <!-- Filtres et Tri -->
-            <div class="mb-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-2 border-primary/30 p-6">
+            <div class="mb-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-2 border-primary/30 p-6 relative z-40">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Recherche -->
                     <div class="flex flex-col">
@@ -64,20 +64,60 @@
                     </div>
 
                     <!-- Statut -->
-                    <div class="flex flex-col">
+                    <div class="flex flex-col relative z-50">
                         <label class="text-sm font-cinzel text-txt-primary mb-2 flex items-center gap-2">
                             <span>🎯</span> Statut
                         </label>
-                        <select
-                            v-model="filters.statut"
-                            class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-                        >
-                            <option value="">Tous</option>
-                            <option value="nouvelle">Nouvelle</option>
-                            <option value="en_cours">En cours</option>
-                            <option value="terminee">Terminée</option>
-                            <option value="rejetee">Rejetée</option>
-                        </select>
+                        <div class="relative z-50">
+                            <!-- Bouton dropdown -->
+                            <button
+                                @click="statusDropdownOpen = !statusDropdownOpen"
+                                type="button"
+                                class="w-full px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm text-left flex items-center justify-between"
+                            >
+                                <span class="text-sm text-txt-primary">
+                                    {{ filters.statuts.length === 0 ? 'Aucun statut' : `${filters.statuts.length} sélectionné${filters.statuts.length > 1 ? 's' : ''}` }}
+                                </span>
+                                <span :class="['transition-transform duration-200', statusDropdownOpen ? 'rotate-180' : '']">▼</span>
+                            </button>
+
+                            <!-- Liste déroulante -->
+                            <transition name="dropdown">
+                                <div
+                                    v-if="statusDropdownOpen"
+                                    class="absolute z-[100] w-full mt-1 bg-white border-2 border-primary/40 rounded-lg shadow-lg p-2 space-y-1"
+                                >
+                                    <div
+                                        v-for="statut in statusOptions"
+                                        :key="statut.value"
+                                        @click="toggleStatus(statut.value)"
+                                        :class="[
+                                            'flex items-center gap-2 cursor-pointer px-3 py-2 rounded-md transition-all duration-200',
+                                            filters.statuts.includes(statut.value)
+                                                ? statut.activeClass
+                                                : 'hover:bg-gray-50'
+                                        ]"
+                                    >
+                                        <div :class="[
+                                            'w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200',
+                                            filters.statuts.includes(statut.value)
+                                                ? statut.checkboxClass
+                                                : 'border-gray-300 bg-white'
+                                        ]">
+                                            <span v-if="filters.statuts.includes(statut.value)" class="text-white text-xs font-bold">✓</span>
+                                        </div>
+                                        <span :class="[
+                                            'text-sm font-cinzel transition-colors',
+                                            filters.statuts.includes(statut.value)
+                                                ? 'font-bold ' + statut.textClass
+                                                : 'text-txt-secondary'
+                                        ]">
+                                            {{ statut.label }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </transition>
+                        </div>
                     </div>
 
                     <!-- Prime Min -->
@@ -232,15 +272,58 @@ export default {
         const isLoading = ref(false);
         const error = ref('');
         const showModal = ref(false);
+        const statusDropdownOpen = ref(false);
 
         // Filtres
         const filters = ref({
             search: '',
-            statut: '',
+            statuts: ['nouvelle', 'en_cours'],
             primeMin: null,
         });
 
         const sortBy = ref('date_desc');
+
+        // Options de statut avec styles
+        const statusOptions = [
+            {
+                value: 'nouvelle',
+                label: 'Nouvelle',
+                activeClass: 'bg-primary/10 border-primary/30',
+                checkboxClass: 'border-primary bg-primary',
+                textClass: 'text-primary-dark'
+            },
+            {
+                value: 'en_cours',
+                label: 'En cours',
+                activeClass: 'bg-secondary/10 border-secondary/30',
+                checkboxClass: 'border-secondary bg-secondary',
+                textClass: 'text-secondary-dark'
+            },
+            {
+                value: 'terminee',
+                label: 'Terminée',
+                activeClass: 'bg-success/10 border-success/30',
+                checkboxClass: 'border-success bg-success',
+                textClass: 'text-success'
+            },
+            {
+                value: 'rejetee',
+                label: 'Rejetée',
+                activeClass: 'bg-accent/10 border-accent/30',
+                checkboxClass: 'border-accent bg-accent',
+                textClass: 'text-accent'
+            }
+        ];
+
+        // Toggle statut
+        const toggleStatus = (status) => {
+            const index = filters.value.statuts.indexOf(status);
+            if (index > -1) {
+                filters.value.statuts.splice(index, 1);
+            } else {
+                filters.value.statuts.push(status);
+            }
+        };
 
         // Charger les quêtes
         const loadQuests = async () => {
@@ -270,8 +353,8 @@ export default {
             }
 
             // Statut
-            if (filters.value.statut) {
-                filtered = filtered.filter(q => q.statut === filters.value.statut);
+            if (filters.value.statuts.length > 0) {
+                filtered = filtered.filter(q => filters.value.statuts.includes(q.statut));
             }
 
             // Prime min
@@ -308,7 +391,7 @@ export default {
         const resetFilters = () => {
             filters.value = {
                 search: '',
-                statut: '',
+                statuts: ['nouvelle', 'en_cours'],
                 primeMin: null,
             };
             sortBy.value = 'date_desc';
@@ -390,6 +473,9 @@ export default {
             filters,
             sortBy,
             showModal,
+            statusDropdownOpen,
+            statusOptions,
+            toggleStatus,
             resetFilters,
             openModal,
             closeModal,
@@ -472,5 +558,36 @@ export default {
   line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Animation dropdown */
+.dropdown-enter-active {
+  animation: dropdown-in 0.2s ease-out;
+}
+
+.dropdown-leave-active {
+  animation: dropdown-out 0.15s ease-in;
+}
+
+@keyframes dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dropdown-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
 }
 </style>
