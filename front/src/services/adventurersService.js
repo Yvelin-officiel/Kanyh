@@ -1,7 +1,7 @@
 // Service pour gérer les aventuriers
 // TODO: Remplacer les données de test par de vrais appels API quand le backend sera connecté
 
-const API_BASE_URL = "http://localhost:8000"; // À adapter selon votre configuration
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 /**
  * Récupère la liste des aventuriers
