@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "aventurier")
@@ -25,4 +27,7 @@ public class Aventurier {
     private Number tauxJournalierBase;
     private String disponibilite;
     private LocalDate dateDisponibilite;
+
+    @OneToMany(mappedBy = "aventurier")
+    private List<ParticipationEquipe> participations = new ArrayList<>();
 }

@@ -1,10 +1,11 @@
 package com.data.kanyh.mapper;
 
-import com.data.kanyh.dto.AventurierDTO;
 import com.data.kanyh.dto.EquipeDTO;
 import com.data.kanyh.dto.EquipeInputDTO;
+import com.data.kanyh.dto.ParticipationEquipeDTO;
 import com.data.kanyh.model.Aventurier;
 import com.data.kanyh.model.Equipe;
+import com.data.kanyh.model.ParticipationEquipe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 class EquipeMapperTest {
 
     @Mock
-    private AventurierMapper aventurierMapper;
+    private ParticipationEquipeMapper participationEquipeMapper;
 
     @InjectMocks
     private EquipeMapper equipeMapper;
@@ -34,8 +34,10 @@ class EquipeMapperTest {
     private Equipe equipe;
     private Aventurier aventurier1;
     private Aventurier aventurier2;
-    private AventurierDTO aventurierDTO1;
-    private AventurierDTO aventurierDTO2;
+    private ParticipationEquipe participation1;
+    private ParticipationEquipe participation2;
+    private ParticipationEquipeDTO participationDTO1;
+    private ParticipationEquipeDTO participationDTO2;
 
     @BeforeEach
     void setUp() {
@@ -43,17 +45,9 @@ class EquipeMapperTest {
         aventurier1.setId(1L);
         aventurier1.setNom("Gandalf");
 
-        aventurierDTO1 = new AventurierDTO();
-        aventurierDTO1.setId(1L);
-        aventurierDTO1.setNom("Gandalf");
-
         aventurier2 = new Aventurier();
         aventurier2.setId(2L);
         aventurier2.setNom("Aragorn");
-
-        aventurierDTO2 = new AventurierDTO();
-        aventurierDTO2.setId(2L);
-        aventurierDTO2.setNom("Aragorn");
 
         equipe = new Equipe();
         equipe.setId(1L);
@@ -62,14 +56,33 @@ class EquipeMapperTest {
         equipe.setDateRetourPrevue(LocalDate.of(2025, 2, 1));
         equipe.setCoutTotal(10000.0);
         equipe.setRatioRentabilite(1.5);
-        equipe.setAventuriers(Arrays.asList(aventurier1, aventurier2));
+
+        participation1 = new ParticipationEquipe();
+        participation1.setId(1L);
+        participation1.setEquipe(equipe);
+        participation1.setAventurier(aventurier1);
+
+        participation2 = new ParticipationEquipe();
+        participation2.setId(2L);
+        participation2.setEquipe(equipe);
+        participation2.setAventurier(aventurier2);
+
+        equipe.setParticipations(Arrays.asList(participation1, participation2));
+
+        participationDTO1 = new ParticipationEquipeDTO();
+        participationDTO1.setId(1L);
+        participationDTO1.setAventurierNom("Gandalf");
+
+        participationDTO2 = new ParticipationEquipeDTO();
+        participationDTO2.setId(2L);
+        participationDTO2.setAventurierNom("Aragorn");
     }
 
     @Test
     @DisplayName("toDTO - Doit convertir une entité Equipe en EquipeDTO avec tous les champs")
     void toDTO_ShouldConvertEntityToDTO_WithAllFields() {
-        when(aventurierMapper.toDTO(aventurier1)).thenReturn(aventurierDTO1);
-        when(aventurierMapper.toDTO(aventurier2)).thenReturn(aventurierDTO2);
+        when(participationEquipeMapper.toDTO(participation1)).thenReturn(participationDTO1);
+        when(participationEquipeMapper.toDTO(participation2)).thenReturn(participationDTO2);
 
         EquipeDTO dto = equipeMapper.toDTO(equipe);
 
@@ -80,20 +93,20 @@ class EquipeMapperTest {
         assertThat(dto.getDateRetourPrevue()).isEqualTo(LocalDate.of(2025, 2, 1));
         assertThat(dto.getCoutTotal()).isEqualTo(10000.0);
         assertThat(dto.getRatioRentabilite()).isEqualTo(1.5);
-        assertThat(dto.getAventuriers()).hasSize(2);
-        assertThat(dto.getAventuriers().get(0).getNom()).isEqualTo("Gandalf");
-        assertThat(dto.getAventuriers().get(1).getNom()).isEqualTo("Aragorn");
+        assertThat(dto.getParticipations()).hasSize(2);
+        assertThat(dto.getParticipations().get(0).getAventurierNom()).isEqualTo("Gandalf");
+        assertThat(dto.getParticipations().get(1).getAventurierNom()).isEqualTo("Aragorn");
     }
 
     @Test
-    @DisplayName("toDTO - Doit gérer une équipe sans aventuriers")
-    void toDTO_ShouldHandleEmptyAventuriers() {
-        equipe.setAventuriers(List.of());
+    @DisplayName("toDTO - Doit gérer une équipe sans participations")
+    void toDTO_ShouldHandleEmptyParticipations() {
+        equipe.setParticipations(List.of());
 
         EquipeDTO dto = equipeMapper.toDTO(equipe);
 
         assertThat(dto).isNotNull();
-        assertThat(dto.getAventuriers()).isEmpty();
+        assertThat(dto.getParticipations()).isEmpty();
     }
 
     @Test
@@ -101,18 +114,13 @@ class EquipeMapperTest {
     void toEntity_ShouldConvertInputDTOToEntity() {
         EquipeInputDTO inputDTO = new EquipeInputDTO();
         inputDTO.setNom("Nouvelle Équipe");
-        inputDTO.setAventuriers(Arrays.asList(1L, 2L));
 
-        List<Aventurier> aventuriers = Arrays.asList(aventurier1, aventurier2);
-
-        Equipe result = equipeMapper.toEntity(inputDTO, aventuriers);
+        Equipe result = equipeMapper.toEntity(inputDTO);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isNull(); // L'ID n'est pas défini lors de la création
         assertThat(result.getNom()).isEqualTo("Nouvelle Équipe");
-        assertThat(result.getAventuriers()).hasSize(2);
-        assertThat(result.getAventuriers().get(0).getNom()).isEqualTo("Gandalf");
-        assertThat(result.getAventuriers().get(1).getNom()).isEqualTo("Aragorn");
+        assertThat(result.getParticipations()).isEmpty();
         assertThat(result.getDateDepart()).isNull();
         assertThat(result.getDateRetourPrevue()).isNull();
         assertThat(result.getCoutTotal()).isNull();
@@ -120,63 +128,52 @@ class EquipeMapperTest {
     }
 
     @Test
-    @DisplayName("toEntity - Doit créer une équipe avec un seul aventurier")
-    void toEntity_ShouldCreateEquipeWithSingleAventurier() {
+    @DisplayName("toEntity - Doit créer une équipe sans participations initialement")
+    void toEntity_ShouldCreateEquipeWithoutParticipations() {
         EquipeInputDTO inputDTO = new EquipeInputDTO();
         inputDTO.setNom("Équipe Solo");
-        inputDTO.setAventuriers(List.of(1L));
 
-        List<Aventurier> aventuriers = List.of(aventurier1);
-
-        Equipe result = equipeMapper.toEntity(inputDTO, aventuriers);
+        Equipe result = equipeMapper.toEntity(inputDTO);
 
         assertThat(result).isNotNull();
         assertThat(result.getNom()).isEqualTo("Équipe Solo");
-        assertThat(result.getAventuriers()).hasSize(1);
-        assertThat(result.getAventuriers().get(0).getNom()).isEqualTo("Gandalf");
+        assertThat(result.getParticipations()).isEmpty();
     }
 
     @Test
-    @DisplayName("updateEntityFromDTO - Doit mettre à jour le nom et les aventuriers")
-    void updateEntityFromDTO_ShouldUpdateNameAndAventuriers() {
+    @DisplayName("updateEntityFromDTO - Doit mettre à jour uniquement le nom")
+    void updateEntityFromDTO_ShouldUpdateOnlyName() {
         EquipeInputDTO updateDTO = new EquipeInputDTO();
         updateDTO.setNom("Nom Mis à Jour");
-        updateDTO.setAventuriers(List.of(1L));
-
-        List<Aventurier> newAventuriers = List.of(aventurier1);
 
         Equipe existingEquipe = new Equipe();
         existingEquipe.setId(1L);
         existingEquipe.setNom("Ancien Nom");
         existingEquipe.setDateDepart(LocalDate.of(2025, 1, 1));
         existingEquipe.setCoutTotal(5000.0);
-        existingEquipe.setAventuriers(Arrays.asList(aventurier1, aventurier2));
+        existingEquipe.setParticipations(Arrays.asList(participation1, participation2));
 
-        equipeMapper.updateEntityFromDTO(updateDTO, existingEquipe, newAventuriers);
+        equipeMapper.updateEntityFromDTO(updateDTO, existingEquipe);
 
         assertThat(existingEquipe.getNom()).isEqualTo("Nom Mis à Jour");
-        assertThat(existingEquipe.getAventuriers()).hasSize(1);
-        assertThat(existingEquipe.getAventuriers().get(0).getNom()).isEqualTo("Gandalf");
+        assertThat(existingEquipe.getParticipations()).hasSize(2);
         assertThat(existingEquipe.getId()).isEqualTo(1L);
         assertThat(existingEquipe.getDateDepart()).isEqualTo(LocalDate.of(2025, 1, 1));
         assertThat(existingEquipe.getCoutTotal()).isEqualTo(5000.0);
     }
 
     @Test
-    @DisplayName("updateEntityFromDTO - Doit remplacer complètement la liste d'aventuriers")
-    void updateEntityFromDTO_ShouldReplaceAventuriersList() {
+    @DisplayName("updateEntityFromDTO - Ne doit pas modifier les participations")
+    void updateEntityFromDTO_ShouldNotModifyParticipations() {
         EquipeInputDTO updateDTO = new EquipeInputDTO();
         updateDTO.setNom("Équipe");
-        updateDTO.setAventuriers(Arrays.asList(2L));
-
-        List<Aventurier> newAventuriers = List.of(aventurier2);
 
         Equipe existingEquipe = new Equipe();
-        existingEquipe.setAventuriers(Arrays.asList(aventurier1));
+        existingEquipe.setParticipations(Arrays.asList(participation1));
 
-        equipeMapper.updateEntityFromDTO(updateDTO, existingEquipe, newAventuriers);
+        equipeMapper.updateEntityFromDTO(updateDTO, existingEquipe);
 
-        assertThat(existingEquipe.getAventuriers()).hasSize(1);
-        assertThat(existingEquipe.getAventuriers().get(0).getNom()).isEqualTo("Aragorn");
+        assertThat(existingEquipe.getParticipations()).hasSize(1);
+        assertThat(existingEquipe.getParticipations().get(0).getAventurier().getNom()).isEqualTo("Gandalf");
     }
 }

@@ -4,25 +4,20 @@ import com.data.kanyh.dto.EquipeDTO;
 import com.data.kanyh.dto.EquipeInputDTO;
 import com.data.kanyh.exception.NotFoundException;
 import com.data.kanyh.mapper.EquipeMapper;
-import com.data.kanyh.model.Aventurier;
 import com.data.kanyh.model.Equipe;
-import com.data.kanyh.repository.AventurierRepository;
 import com.data.kanyh.repository.EquipeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class EquipeService {
 
     private final EquipeRepository equipeRepository;
-    private final AventurierRepository aventurierRepository;
     private final EquipeMapper equipeMapper;
     private static final String NOT_FOUND = "Équipe non trouvée";
-    private static final String AVENTURIER_NOT_FOUND = "Un ou plusieurs aventuriers non trouvés";
 
     /**
      * Récupère toutes les équipes disponibles.
@@ -50,33 +45,32 @@ public class EquipeService {
 
     /**
      * Crée et sauvegarde une nouvelle équipe.
-     * Valide que tous les aventuriers spécifiés existent avant de créer l'équipe.
+     * Note: Cette méthode ne crée que l'équipe. Les participations des aventuriers doivent être créées
+     * séparément via le ParticipationEquipeService.
      *
      * @param input le {@link EquipeInputDTO} contenant les informations de l'équipe à créer
      * @return le {@link EquipeDTO} de l'équipe créée avec son identifiant généré
-     * @throws NotFoundException si un ou plusieurs aventuriers n'existent pas
      */
     public EquipeDTO save(EquipeInputDTO input) {
-        List<Aventurier> aventuriers = fetchAventuriers(input.getAventuriers());
-        Equipe equipe = equipeMapper.toEntity(input, aventuriers);
+        Equipe equipe = equipeMapper.toEntity(input);
         Equipe savedEquipe = equipeRepository.save(equipe);
         return equipeMapper.toDTO(savedEquipe);
     }
 
     /**
      * Met à jour une équipe existante.
-     * Valide que l'équipe et tous les aventuriers spécifiés existent avant la mise à jour.
+     * Note: Cette méthode ne met à jour que les informations de base de l'équipe.
+     * Les participations doivent être gérées séparément via le ParticipationEquipeService.
      *
      * @param id l'identifiant de l'équipe à mettre à jour
      * @param input le {@link EquipeInputDTO} contenant les nouvelles valeurs
      * @return le {@link EquipeDTO} de l'équipe mise à jour
-     * @throws NotFoundException si l'équipe n'existe pas ou si un ou plusieurs aventuriers n'existent pas
+     * @throws NotFoundException si l'équipe n'existe pas
      */
     public EquipeDTO updateEquipe(Long id, EquipeInputDTO input) {
         Equipe equipe = equipeRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND));
-        List<Aventurier> aventuriers = fetchAventuriers(input.getAventuriers());
-        equipeMapper.updateEntityFromDTO(input, equipe, aventuriers);
+        equipeMapper.updateEntityFromDTO(input, equipe);
         Equipe updatedEquipe = equipeRepository.save(equipe);
         return equipeMapper.toDTO(updatedEquipe);
     }
@@ -95,19 +89,4 @@ public class EquipeService {
         equipeRepository.deleteById(id);
     }
 
-    /**
-     * Récupère la liste des aventuriers correspondant aux IDs fournis.
-     * Valide que tous les aventuriers existent.
-     *
-     * @param aventurierIds la liste des IDs des aventuriers à récupérer
-     * @return la liste des entités {@link Aventurier} correspondantes
-     * @throws NotFoundException si un ou plusieurs aventuriers n'existent pas
-     */
-    private List<Aventurier> fetchAventuriers(List<Long> aventurierIds) {
-        List<Aventurier> aventuriers = aventurierIds.stream()
-                .map(id -> aventurierRepository.findById(id)
-                        .orElseThrow(() -> new NotFoundException(AVENTURIER_NOT_FOUND)))
-                .collect(Collectors.toList());
-        return aventuriers;
-    }
 }
