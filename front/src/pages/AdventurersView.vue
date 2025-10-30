@@ -1,10 +1,16 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-[#f5f1e8] via-[#faf8f3] to-[#ebe5d9] p-8 font-inter relative overflow-hidden">
-    <!-- Effet de parchemin en arrière-plan -->
-    <div class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')]"></div>
-    
-    <!-- Particules dorées flottantes -->
-    <div class="absolute inset-0 pointer-events-none">
+  <div class="min-h-screen bg-gradient-to-br from-[#f5f1e8] via-[#faf8f3] to-[#ebe5d9] font-inter">
+    <!-- Navbar -->
+    <Navbar />
+
+    <div class="p-8 relative overflow-hidden">
+      <!-- Effet de parchemin en arrière-plan -->
+      <div
+        class="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')]">
+      </div>
+
+      <!-- Particules dorées flottantes -->
+      <div class="absolute inset-0 pointer-events-none">
       <div class="sparkle-light" style="top: 10%; left: 15%; animation-delay: 0s;"></div>
       <div class="sparkle-light" style="top: 70%; left: 85%; animation-delay: 2s;"></div>
       <div class="sparkle-light" style="top: 30%; left: 40%; animation-delay: 4s;"></div>
@@ -15,7 +21,8 @@
     <div class="max-w-7xl mx-auto relative z-10">
       <!-- En-tête -->
       <div class="text-center mb-8">
-        <h1 class="text-5xl font-cinzel text-primary-dark mb-2 drop-shadow-[0_2px_4px_rgba(161,124,59,0.3)] tracking-wide">
+        <h1
+          class="text-5xl font-cinzel text-primary-dark mb-2 drop-shadow-[0_2px_4px_rgba(161,124,59,0.3)] tracking-wide">
           🗡️ Registre des Aventuriers
         </h1>
         <p class="text-txt-primary font-cinzel text-lg italic">
@@ -25,10 +32,8 @@
 
       <!-- Bouton Création Rapide -->
       <div class="mb-6 flex justify-end">
-        <button
-          @click="openAddModal"
-          class="px-6 py-3 bg-gradient-to-br from-primary to-primary-dark text-white rounded-xl font-cinzel text-lg shadow-[0_4px_12px_rgba(197,160,89,0.3)] hover:shadow-[0_6px_20px_rgba(197,160,89,0.5)] transition-all duration-300 hover:scale-105 border border-primary-dark relative overflow-hidden"
-        >
+        <button @click="openAddModal"
+          class="px-6 py-3 bg-gradient-to-br from-primary to-primary-dark text-white rounded-xl font-cinzel text-lg shadow-[0_4px_12px_rgba(197,160,89,0.3)] hover:shadow-[0_6px_20px_rgba(197,160,89,0.5)] transition-all duration-300 hover:scale-105 border border-primary-dark relative overflow-hidden">
           <span class="flex items-center gap-2">
             <span class="text-2xl">➕</span>
             Recruter un Aventurier
@@ -44,12 +49,8 @@
             <label class="text-sm font-cinzel text-txt-primary mb-2 flex items-center gap-2">
               <span>🔍</span> Nom
             </label>
-            <input
-              v-model="filters.nom"
-              type="text"
-              placeholder="Rechercher par nom..."
-              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-            />
+            <input v-model="filters.nom" type="text" placeholder="Rechercher par nom..."
+              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" />
           </div>
 
           <!-- Recherche par spécialité -->
@@ -57,12 +58,8 @@
             <label class="text-sm font-cinzel text-txt-primary mb-2 flex items-center gap-2">
               <span>⚔️</span> Spécialité
             </label>
-            <input
-              v-model="filters.specialite"
-              type="text"
-              placeholder="Guerrier, Mage..."
-              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-            />
+            <input v-model="filters.specialite" type="text" placeholder="Guerrier, Mage..."
+              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" />
           </div>
 
           <!-- Recherche par niveau -->
@@ -70,14 +67,8 @@
             <label class="text-sm font-cinzel text-txt-primary mb-2 flex items-center gap-2">
               <span>⭐</span> Niveau Min.
             </label>
-            <input
-              v-model.number="filters.niveauMin"
-              type="number"
-              min="0"
-              max="10"
-              placeholder="0-10"
-              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-            />
+            <input v-model.number="filters.niveauMin" type="number" min="0" max="10" placeholder="0-10"
+              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" />
           </div>
 
           <!-- Tri -->
@@ -85,10 +76,8 @@
             <label class="text-sm font-cinzel text-txt-primary mb-2 flex items-center gap-2">
               <span>📊</span> Trier par
             </label>
-            <select 
-              v-model="sortBy" 
-              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-            >
+            <select v-model="sortBy"
+              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm">
               <option value="">Sans tri</option>
               <option value="experience-desc">Expérience (décroissant)</option>
               <option value="experience-asc">Expérience (croissant)</option>
@@ -100,10 +89,8 @@
 
         <!-- Bouton réinitialiser -->
         <div v-if="hasActiveFilters" class="mt-4 text-center">
-          <button
-            @click="resetFilters"
-            class="px-4 py-2 text-sm font-cinzel text-primary hover:text-primary-dark transition-colors underline"
-          >
+          <button @click="resetFilters"
+            class="px-4 py-2 text-sm font-cinzel text-primary hover:text-primary-dark transition-colors underline">
             🔄 Réinitialiser les filtres
           </button>
         </div>
@@ -116,10 +103,12 @@
       </div>
 
       <!-- Message d'erreur -->
-      <div v-else-if="error" class="bg-red-50 border-2 border-accent text-txt-primary px-6 py-4 rounded-xl font-cinzel text-center shadow-md">
+      <div v-else-if="error"
+        class="bg-red-50 border-2 border-accent text-txt-primary px-6 py-4 rounded-xl font-cinzel text-center shadow-md">
         <span class="text-3xl">⚠️</span>
         <p class="mt-2">{{ error }}</p>
-        <button @click="loadAdventurers" class="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+        <button @click="loadAdventurers"
+          class="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
           Réessayer
         </button>
       </div>
@@ -137,28 +126,22 @@
         <div class="mb-4 text-center">
           <span class="text-txt-primary font-cinzel">
             <span class="text-2xl font-bold text-primary-dark">{{ filteredAdventurers.length }}</span>
-            aventurier{{ filteredAdventurers.length > 1 ? 's' : '' }} trouvé{{ filteredAdventurers.length > 1 ? 's' : '' }}
+            aventurier{{ filteredAdventurers.length > 1 ? 's' : '' }} trouvé{{ filteredAdventurers.length > 1 ? 's' : ''
+            }}
           </span>
         </div>
 
         <!-- Grille des aventuriers -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div
-            v-for="adventurer in filteredAdventurers"
-            :key="adventurer.id"
-            class="adventurer-card bg-white/95 rounded-xl shadow-md border-2 border-primary/25 overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer hover:border-primary/50 flex flex-col"
-          >
+          <div v-for="adventurer in filteredAdventurers" :key="adventurer.id"
+            class="adventurer-card bg-white/95 rounded-xl shadow-md border-2 border-primary/25 overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer hover:border-primary/50 flex flex-col">
             <!-- Badge disponibilité -->
-            <div 
-              class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-cinzel font-bold z-10"
-              :class="
-                adventurer.disponibilite === 'disponible' 
-                  ? 'bg-success text-dark-bg' 
-                  : adventurer.disponibilite === 'en mission' 
-                    ? 'bg-accent text-light-bg' 
-                    : 'bg-primary text-dark-bg'
-              "
-            >
+            <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-cinzel font-bold z-10" :class="adventurer.disponibilite === 'disponible'
+                ? 'bg-success text-dark-bg'
+                : adventurer.disponibilite === 'en mission'
+                  ? 'bg-accent text-light-bg'
+                  : 'bg-primary text-dark-bg'
+              ">
               {{ formatDisponibilite(adventurer.disponibilite) }}
             </div>
 
@@ -181,12 +164,8 @@
               <div class="flex items-center gap-2">
                 <span class="text-lg">⭐</span>
                 <div class="flex gap-0.5">
-                  <span 
-                    v-for="i in 10" 
-                    :key="i" 
-                    class="text-sm"
-                    :class="i <= adventurer.niveau_experience ? 'text-primary' : 'text-gray-300'"
-                  >★</span>
+                  <span v-for="i in 10" :key="i" class="text-sm"
+                    :class="i <= adventurer.niveau_experience ? 'text-primary' : 'text-gray-300'">★</span>
                 </div>
               </div>
 
@@ -208,11 +187,8 @@
     </div>
 
     <!-- Modale d'ajout d'aventurier -->
-    <AddAdventurerModal
-      :isOpen="isAddModalOpen"
-      @close="closeAddModal"
-      @adventurer-created="handleAdventurerCreated"
-    />
+    <AddAdventurerModal :isOpen="isAddModalOpen" @close="closeAddModal" @adventurer-created="handleAdventurerCreated" />
+    </div>
   </div>
 </template>
 
@@ -220,25 +196,27 @@
 import { ref, onMounted, computed } from 'vue';
 import { getAdventurers } from '../services/adventurersService';
 import AddAdventurerModal from '../components/AddAdventurerModal.vue';
+import Navbar from '../components/Navbar.vue';
 
 export default {
   name: 'AdventurersView',
   components: {
-    AddAdventurerModal
+    AddAdventurerModal,
+    Navbar
   },
   setup() {
     const adventurers = ref([]);
     const loading = ref(false);
     const error = ref(null);
     const isAddModalOpen = ref(false);
-    
+
     // Filtres
     const filters = ref({
       nom: '',
       specialite: '',
       niveauMin: null
     });
-    
+
     // Tri
     const sortBy = ref('');
 
@@ -262,21 +240,21 @@ export default {
 
       // Filtrer par nom
       if (filters.value.nom) {
-        result = result.filter(adv => 
+        result = result.filter(adv =>
           adv.nom.toLowerCase().includes(filters.value.nom.toLowerCase())
         );
       }
 
       // Filtrer par spécialité
       if (filters.value.specialite) {
-        result = result.filter(adv => 
+        result = result.filter(adv =>
           adv.specialite.toLowerCase().includes(filters.value.specialite.toLowerCase())
         );
       }
 
       // Filtrer par niveau minimum
       if (filters.value.niveauMin !== null && filters.value.niveauMin !== '') {
-        result = result.filter(adv => 
+        result = result.filter(adv =>
           adv.niveau_experience >= filters.value.niveauMin
         );
       }
@@ -304,10 +282,10 @@ export default {
 
     // Vérifier si des filtres sont actifs
     const hasActiveFilters = computed(() => {
-      return filters.value.nom !== '' || 
-             filters.value.specialite !== '' || 
-             (filters.value.niveauMin !== null && filters.value.niveauMin !== '') ||
-             sortBy.value !== '';
+      return filters.value.nom !== '' ||
+        filters.value.specialite !== '' ||
+        (filters.value.niveauMin !== null && filters.value.niveauMin !== '') ||
+        sortBy.value !== '';
     });
 
     // Réinitialiser les filtres
@@ -382,6 +360,8 @@ export default {
 };
 </script>
 
+
+
 <style scoped>
 /* Animation des particules dorées en mode clair */
 .sparkle-light {
@@ -395,10 +375,13 @@ export default {
 }
 
 @keyframes float-light {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0) scale(1);
     opacity: 0.5;
   }
+
   50% {
     transform: translateY(-30px) scale(1.3);
     opacity: 0.8;
@@ -411,18 +394,36 @@ export default {
   position: relative;
 }
 
-.adventurer-card:nth-child(1) { animation-delay: 0.05s; }
-.adventurer-card:nth-child(2) { animation-delay: 0.1s; }
-.adventurer-card:nth-child(3) { animation-delay: 0.15s; }
-.adventurer-card:nth-child(4) { animation-delay: 0.2s; }
-.adventurer-card:nth-child(5) { animation-delay: 0.25s; }
-.adventurer-card:nth-child(6) { animation-delay: 0.3s; }
+.adventurer-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.adventurer-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.adventurer-card:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.adventurer-card:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.adventurer-card:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.adventurer-card:nth-child(6) {
+  animation-delay: 0.3s;
+}
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

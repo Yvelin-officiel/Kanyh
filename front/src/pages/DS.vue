@@ -1,10 +1,14 @@
 <template>
-  <div class="bg-light-bg h-full   p-8 font-inter">
-    <div class="max-w-4xl mx-auto">
-      <header class="mb-8">
-        <h1 class="text-3xl">Design system preview</h1>
-        <p class="text-lg mt-4">Typographie, couleurs, boutons — prévisualisation</p>
-      </header>
+  <div class="min-h-screen bg-light-bg font-inter">
+    <!-- Navbar -->
+    <Navbar />
+    
+    <div class="p-8">
+      <div class="max-w-4xl mx-auto">
+        <header class="mb-8">
+          <h1 class="text-3xl">Design system preview</h1>
+          <p class="text-lg mt-4">Typographie, couleurs, boutons — prévisualisation</p>
+        </header>
 
       <!-- Typography -->
       <section class="mb-8">
@@ -75,12 +79,18 @@
 
       </section>
 
+      </div>
     </div>
-    </div>
+  </div>
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue';
+
 export default {
+  components: {
+    Navbar
+  },
   name: 'HelloWorldPreview'
 }
 </script>
