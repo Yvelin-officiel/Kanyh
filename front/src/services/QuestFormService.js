@@ -46,7 +46,7 @@ class QuestFormService {
             id: nextQuestId++,
             ...questData,
             statut: "nouvelle",
-            experience_gagnee: Math.floor(questData.prime * 0.3), // 30% de la prime en XP
+            experienceGagnee: Math.floor(questData.prime * 0.3), // 30% de la prime en XP
           };
           resolve(newQuest);
         }, 500);

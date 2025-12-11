@@ -162,7 +162,7 @@
               <!-- Spécialité -->
               <div class="flex items-center gap-2">
                 <span class="text-lg">🎯</span>
-                <span class="text-txt-secondary">{{ adventurer.specialite }}</span>
+                <span class="text-txt-secondary">{{ adventurer.specialite?.nom }}</span>
               </div>
 
               <!-- Expérience -->
@@ -177,7 +177,7 @@
               <!-- Taux journalier -->
               <div class="flex items-center gap-2">
                 <span class="text-lg">💰</span>
-                <span class="text-primary font-bold">{{ adventurer.taux_journalier_base.toLocaleString() }} or</span>
+                <span class="text-primary font-bold">{{ adventurer.tauxJournalierBase.toLocaleString() }} or</span>
               </div>
 
               <!-- Disponibilité -->
@@ -264,7 +264,7 @@ export default {
       // Filtrer par spécialité
       if (filters.value.specialite) {
         result = result.filter(adv =>
-          adv.specialite === filters.value.specialite
+          (adv.specialite?.nom || adv.specialite) === filters.value.specialite
         );
       }
 
@@ -284,9 +284,9 @@ export default {
             case 'experience-asc':
               return a.niveau_experience - b.niveau_experience;
             case 'taux-desc':
-              return b.taux_journalier_base - a.taux_journalier_base;
+              return b.tauxJournalierBase - a.tauxJournalierBase;
             case 'taux-asc':
-              return a.taux_journalier_base - b.taux_journalier_base;
+              return a.tauxJournalierBase - b.tauxJournalierBase;
             default:
               return 0;
           }

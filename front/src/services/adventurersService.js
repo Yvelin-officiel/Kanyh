@@ -9,7 +9,7 @@ const mockAdventurers = [
     nom: "Thorin Écu-de-Chêne",
     specialite: "Guerrier",
     niveau_experience: 8,
-    taux_journalier_base: 250,
+    tauxJournalierBase: 250,
     disponibilite: "disponible",
     date_disponibilite: "2025-10-30",
   },
@@ -18,7 +18,7 @@ const mockAdventurers = [
     nom: "Gandalf le Gris",
     specialite: "Mage",
     niveau_experience: 10,
-    taux_journalier_base: 400,
+    tauxJournalierBase: 400,
     disponibilite: "disponible",
     date_disponibilite: "2025-10-30",
   },
@@ -27,7 +27,7 @@ const mockAdventurers = [
     nom: "Legolas Feuille-Verte",
     specialite: "Archer",
     niveau_experience: 9,
-    taux_journalier_base: 320,
+    tauxJournalierBase: 320,
     disponibilite: "en mission",
     date_disponibilite: "2025-11-15",
   },
@@ -36,7 +36,7 @@ const mockAdventurers = [
     nom: "Gimli fils de Gloïn",
     specialite: "Guerrier",
     niveau_experience: 7,
-    taux_journalier_base: 230,
+    tauxJournalierBase: 230,
     disponibilite: "disponible",
     date_disponibilite: "2025-10-30",
   },
@@ -45,7 +45,7 @@ const mockAdventurers = [
     nom: "Aragorn Grands-Pas",
     specialite: "Rôdeur",
     niveau_experience: 9,
-    taux_journalier_base: 350,
+    tauxJournalierBase: 350,
     disponibilite: "disponible",
     date_disponibilite: "2025-10-30",
   },
@@ -54,7 +54,7 @@ const mockAdventurers = [
     nom: "Merlin l'Enchanteur",
     specialite: "Mage",
     niveau_experience: 10,
-    taux_journalier_base: 450,
+    tauxJournalierBase: 450,
     disponibilite: "en repos",
     date_disponibilite: "2025-11-05",
   },
@@ -63,7 +63,7 @@ const mockAdventurers = [
     nom: "Lancelot du Lac",
     specialite: "Paladin",
     niveau_experience: 8,
-    taux_journalier_base: 300,
+    tauxJournalierBase: 300,
     disponibilite: "disponible",
     date_disponibilite: "2025-10-30",
   },
@@ -72,7 +72,7 @@ const mockAdventurers = [
     nom: "Robin des Bois",
     specialite: "Archer",
     niveau_experience: 7,
-    taux_journalier_base: 220,
+    tauxJournalierBase: 220,
     disponibilite: "disponible",
     date_disponibilite: "2025-10-30",
   },
@@ -81,7 +81,7 @@ const mockAdventurers = [
     nom: "Merida la Brave",
     specialite: "Archer",
     niveau_experience: 6,
-    taux_journalier_base: 180,
+    tauxJournalierBase: 180,
     disponibilite: "en mission",
     date_disponibilite: "2025-11-10",
   },
@@ -90,7 +90,7 @@ const mockAdventurers = [
     nom: "Jeanne d'Arc",
     specialite: "Paladin",
     niveau_experience: 9,
-    taux_journalier_base: 380,
+    tauxJournalierBase: 380,
     disponibilite: "disponible",
     date_disponibilite: "2025-10-30",
   },
@@ -163,7 +163,7 @@ export async function getAdventurerById(id) {
 
 /**
  * Crée un nouvel aventurier
- * @param {Object} adventurerData - Données de l'aventurier à créer (nom, specialite, taux_journalier_base)
+ * @param {Object} adventurerData - Données de l'aventurier à créer (nom, specialite, tauxJournalierBase)
  * @returns {Promise<Object>} L'aventurier créé
  */
 export async function createAdventurer(adventurerData) {
@@ -171,8 +171,8 @@ export async function createAdventurer(adventurerData) {
     // Préparer les données pour l'API (uniquement les 3 champs requis)
     const apiData = {
       nom: adventurerData.nom,
-      specialite: adventurerData.specialite,
-      taux_journalier_base: adventurerData.taux_journalier_base,
+      specialiteId: adventurerData.specialiteId,
+      tauxJournalierBase: adventurerData.tauxJournalierBase,
     };
 
     // Tentative d'appel API
