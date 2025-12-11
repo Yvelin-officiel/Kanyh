@@ -43,4 +43,9 @@ public class QueteController {
         queteService.deleteQuete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/historique/{aventurierId}")
+    public ResponseEntity<List<QueteDTO>> getQuetesByAventurierId(@PathVariable Long aventurierId) {
+        return ResponseEntity.ok(queteService.getQuetesByAventurierId(aventurierId));
+    }
 }

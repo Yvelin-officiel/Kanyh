@@ -5,6 +5,7 @@ import com.data.kanyh.dto.QueteInputDTO;
 import com.data.kanyh.exception.NotFoundException;
 import com.data.kanyh.mapper.QueteMapper;
 import com.data.kanyh.model.Quete;
+import com.data.kanyh.repository.AventurierRepository;
 import com.data.kanyh.repository.QueteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 public class QueteService {
 
     private final QueteRepository queteRepository;
+    private final AventurierRepository aventurierRepository;
     private final QueteMapper queteMapper;
     private static final String NOT_FOUND = "Quête non trouvée";
 
@@ -65,7 +67,7 @@ public class QueteService {
      * leur valeur actuelle.
      * </p>
      *
-     * @param id l'identifiant de la quête à mettre à jour
+     * @param id    l'identifiant de la quête à mettre à jour
      * @param input le {@link QueteInputDTO} contenant les nouvelles valeurs
      * @return le {@link QueteDTO} de la quête mise à jour
      * @throws NotFoundException si aucune quête n'existe avec cet identifiant
@@ -91,5 +93,16 @@ public class QueteService {
             throw new NotFoundException(NOT_FOUND);
         }
         queteRepository.deleteById(id);
+    }
+
+    public List<QueteDTO> getQuetesByAventurierId(Long id) {
+        if (!aventurierRepository.existsById(id)) {
+            throw new NotFoundException("Aventurier non trouvé");
+        }
+
+        return queteRepository.findQuetesByAventurierId(id)
+                .stream()
+                .map(queteMapper::toDTO)
+                .toList();
     }
 }

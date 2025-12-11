@@ -9,6 +9,7 @@ import com.data.kanyh.repository.SpecialiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +38,7 @@ public class QueteMapper {
         dto.setCommanditaireId(quete.getCommanditaireId());
         dto.setEquipeId(quete.getEquipeId());
         dto.setSpecialitesRequises(quete.getSpecialitesRequises());
+        dto.setDateCreation(quete.getDateCreation());
         return dto;
     }
 
@@ -56,6 +58,7 @@ public class QueteMapper {
         quete.setDureeEstimee(input.getDureeEstimee());
         quete.setDatePeremption(input.getDatePeremption());
         quete.setStatut(com.data.kanyh.model.StatutQuete.NOUVELLE);
+        quete.setDateCreation(LocalDate.now());
 
         // Convertir les IDs de spécialités en objets Specialite
         if (input.getSpecialitesRequisesIds() != null && !input.getSpecialitesRequisesIds().isEmpty()) {
