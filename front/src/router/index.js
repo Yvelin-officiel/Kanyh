@@ -3,6 +3,8 @@ import Home from "../pages/Home.vue";
 import DS from "../pages/DS.vue";
 import QuestDashboard from "../pages/QuestDashboard.vue";
 import AdventurersView from "../pages/AdventurersView.vue";
+import Login from "../pages/Login.vue";
+import Register from "../pages/Register.vue";
 
 const routes = [
   {
@@ -24,6 +26,16 @@ const routes = [
     path: "/adventurers",
     name: "AdventurersView",
     component: AdventurersView,
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
   },
 ];
 
