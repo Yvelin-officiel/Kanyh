@@ -216,8 +216,8 @@ export default {
                     nom: formData.value.nom,
                     description: formData.value.description,
                     prime: formData.value.prime,
-                    duree_estimee: formData.value.duree_jours * 24, // Convertir jours en heures
-                    date_peremption: formData.value.date_peremption,
+                    dureeEstimee: formData.value.duree_jours * 24, // Convertir jours en heures
+                    datePeremption: formData.value.date_peremption
                 };
 
                 const result = await QuestFormService.createQuest(questData);

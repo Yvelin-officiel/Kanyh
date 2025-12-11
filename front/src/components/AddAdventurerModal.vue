@@ -63,7 +63,7 @@
                                 </label>
                                 <select
                                     id="modal-specialite"
-                                    v-model="formData.specialite"
+                                    v-model="formData.specialiteId"
                                     class="input-field"
                                     required
                                 >
@@ -71,7 +71,7 @@
                                     <option 
                                         v-for="specialite in specialites" 
                                         :key="specialite.id" 
-                                        :value="specialite.nom"
+                                        :value="specialite.id"
                                     >
                                         {{ getSpecialiteIcon(specialite.nom) }} {{ specialite.nom }}
                                     </option>
@@ -85,7 +85,7 @@
                                 </label>
                                 <input
                                     id="modal-taux"
-                                    v-model.number="formData.taux_journalier_base"
+                                    v-model.number="formData.tauxJournalierBase"
                                     type="number"
                                     placeholder="100"
                                     class="input-field"
@@ -149,8 +149,8 @@ export default {
     setup(props, { emit }) {
         const formData = ref({
             nom: '',
-            specialite: '',
-            taux_journalier_base: 100,
+            specialiteId: '',
+            tauxJournalierBase: 100,
         });
 
         const isSubmitting = ref(false);
@@ -197,8 +197,8 @@ export default {
         const resetForm = () => {
             formData.value = {
                 nom: '',
-                specialite: '',
-                taux_journalier_base: 100,
+                specialiteId: '',
+                tauxJournalierBase: 100,
             };
             error.value = '';
         };

@@ -173,12 +173,12 @@
                 </div>
                 <div class="stat-card bg-white/90 border-2 border-secondary/30 shadow-md">
                     <div class="text-3xl mb-2">⚔️</div>
-                    <div class="text-2xl font-cinzel text-secondary-dark font-bold">{{ getStatCount('en_cours') }}</div>
+                    <div class="text-2xl font-cinzel text-secondary-dark font-bold">{{ getStatCount('EN_COURS') }}</div>
                     <div class="text-sm font-cinzel text-txt-secondary">En cours</div>
                 </div>
                 <div class="stat-card bg-white/90 border-2 border-success/30 shadow-md">
                     <div class="text-3xl mb-2">✅</div>
-                    <div class="text-2xl font-cinzel text-success font-bold">{{ getStatCount('terminee') }}</div>
+                    <div class="text-2xl font-cinzel text-success font-bold">{{ getStatCount('TERMINEE') }}</div>
                     <div class="text-sm font-cinzel text-txt-secondary">Terminées</div>
                 </div>
                 <div class="stat-card bg-white/90 border-2 border-primary/30 shadow-md">
@@ -230,22 +230,22 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-lg">⏳</span>
-                            <span class="text-txt-secondary">{{ quest.duree_estimee }}h estimées</span>
+                            <span class="text-txt-secondary">{{ quest.dureeEstimee }}h estimées</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-lg">📅</span>
-                            <span :class="isExpiringSoon(quest.date_peremption) ? 'text-accent font-bold' : 'text-txt-secondary'">
-                                {{ formatDate(quest.date_peremption) }}
+                            <span :class="isExpiringSoon(quest.datePeremption) ? 'text-accent font-bold' : 'text-txt-secondary'">
+                                {{ formatDate(quest.datePeremption) }}
                             </span>
                         </div>
-                        <div v-if="quest.experience_gagnee" class="flex items-center gap-2">
+                        <div v-if="quest.experienceGagnee" class="flex items-center gap-2">
                             <span class="text-lg">✨</span>
-                            <span class="text-secondary">{{ quest.experience_gagnee }} XP</span>
+                            <span class="text-secondary">{{ quest.experienceGagnee }} XP</span>
                         </div>
                     </div>
 
                     <!-- Badge échéance proche -->
-                    <div v-if="isExpiringSoon(quest.date_peremption) && quest.statut !== 'terminee'" class="absolute bottom-3 right-3">
+                    <div v-if="isExpiringSoon(quest.datePeremption) && quest.statut !== 'TERMINEE'" class="absolute bottom-3 right-3">
                         <span class="text-2xl animate-pulse">⚠️</span>
                     </div>
                 </div>
@@ -277,7 +277,7 @@ export default {
         // Filtres
         const filters = ref({
             search: '',
-            statuts: ['nouvelle', 'en_cours'],
+            statuts: ['NOUVELLE', 'EN_COURS'],
             primeMin: null,
         });
 
@@ -286,28 +286,28 @@ export default {
         // Options de statut avec styles
         const statusOptions = [
             {
-                value: 'nouvelle',
+                value: 'NOUVELLE',
                 label: 'Nouvelle',
                 activeClass: 'bg-primary/10 border-primary/30',
                 checkboxClass: 'border-primary bg-primary',
                 textClass: 'text-primary-dark'
             },
             {
-                value: 'en_cours',
+                value: 'EN_COURS',
                 label: 'En cours',
                 activeClass: 'bg-secondary/10 border-secondary/30',
                 checkboxClass: 'border-secondary bg-secondary',
                 textClass: 'text-secondary-dark'
             },
             {
-                value: 'terminee',
+                value: 'TERMINEE',
                 label: 'Terminée',
                 activeClass: 'bg-success/10 border-success/30',
                 checkboxClass: 'border-success bg-success',
                 textClass: 'text-success'
             },
             {
-                value: 'rejetee',
+                value: 'REJETEE',
                 label: 'Rejetée',
                 activeClass: 'bg-accent/10 border-accent/30',
                 checkboxClass: 'border-accent bg-accent',
@@ -374,11 +374,11 @@ export default {
                     case 'prime_asc':
                         return a.prime - b.prime;
                     case 'duree_desc':
-                        return b.duree_estimee - a.duree_estimee;
+                        return b.dureeEstimee - a.dureeEstimee;
                     case 'duree_asc':
-                        return a.duree_estimee - b.duree_estimee;
+                        return a.dureeEstimee - b.dureeEstimee;
                     case 'echeance_asc':
-                        return new Date(a.date_peremption) - new Date(b.date_peremption);
+                        return new Date(a.datePeremption) - new Date(b.datePeremption);
                     default:
                         return 0;
                 }
@@ -391,7 +391,7 @@ export default {
         const resetFilters = () => {
             filters.value = {
                 search: '',
-                statuts: ['nouvelle', 'en_cours'],
+                statuts: ['NOUVELLE', 'EN_COURS'],
                 primeMin: null,
             };
             sortBy.value = 'date_desc';
