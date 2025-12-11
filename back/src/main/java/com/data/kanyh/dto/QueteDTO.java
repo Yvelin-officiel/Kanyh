@@ -19,4 +19,5 @@ public class QueteDTO {
     private Long commanditaireId;
     private Long equipeId;
     private List<Specialite> specialitesRequises;
+    private LocalDate dateCreation;
 }
