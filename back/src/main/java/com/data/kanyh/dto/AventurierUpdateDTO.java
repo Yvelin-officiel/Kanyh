@@ -25,7 +25,7 @@ public class AventurierUpdateDTO {
 
     @NotNull(message = "Le taux journalier de base est obligatoire")
     @PositiveOrZero(message = "Le taux journalier de base doit être positif ou nul")
-    private Number tauxJournalierBase;
+    private Double tauxJournalierBase;
 
     @NotBlank(message = "La disponibilité est obligatoire")
     private String disponibilite;

@@ -24,7 +24,7 @@ public class Aventurier {
     @ManyToOne
     @JoinColumn(name = "specialite_id")
     private Specialite specialite;
-    private Number tauxJournalierBase;
+    private Double tauxJournalierBase;
     private String disponibilite;
     private LocalDate dateDisponibilite;
 
