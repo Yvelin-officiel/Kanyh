@@ -1,5 +1,5 @@
 <template>
-    <nav class="bg-white/90 backdrop-blur-md border-b-2 border-primary/30 shadow-lg sticky top-0 z-40">
+    <nav v-show="!hide" class="bg-white/90 backdrop-blur-md border-b-2 border-primary/30 shadow-lg sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
@@ -165,6 +165,12 @@ import { ref } from 'vue';
 
 export default {
     name: 'Navbar',
+    props: {
+        hide: {
+            type: Boolean,
+            default: false
+        }
+    },
     setup() {
         const mobileMenuOpen = ref(false);
 
