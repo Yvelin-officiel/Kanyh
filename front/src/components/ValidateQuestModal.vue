@@ -209,6 +209,7 @@ const statusOptions = [
                                     placeholder="1000"
                                     class="input-field text-sm sm:text-base"
                                     min="0"
+                                    step="0.1"
                                     required
                                 />
                             </div>
