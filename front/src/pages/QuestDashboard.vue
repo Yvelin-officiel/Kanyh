@@ -257,8 +257,9 @@
                         <span class="text-2xl animate-pulse">⚠️</span>
                     </div>
 
-                    <!-- Bouton de validation -->
+                    <!-- Bouton de validation (uniquement pour les quêtes nouvelles) -->
                     <button
+                        v-if="quest.statut === 'NOUVELLE'"
                         @click.stop="openValidateModal(quest)"
                         class="absolute bottom-3 right-3 px-3 py-1.5 bg-gradient-to-br from-secondary to-secondary-dark text-white rounded-lg font-cinzel text-xs shadow-[0_2px_8px_rgba(45,106,79,0.3)] hover:shadow-[0_4px_12px_rgba(45,106,79,0.5)] transition-all duration-300 hover:scale-105 border border-secondary-dark flex items-center gap-1.5"
                     >
