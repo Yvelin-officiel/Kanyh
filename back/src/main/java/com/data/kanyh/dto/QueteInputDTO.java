@@ -27,5 +27,8 @@ public class QueteInputDTO {
     @NotNull(message = "La date de péremption de la quête ne peut pas être nulle")
     private LocalDate datePeremption;
 
+    @NotBlank(message = "Le statut de la quête ne peut pas être vide")
+    private String statut;
+
     private List<String> specialitesRequisesIds;
 }

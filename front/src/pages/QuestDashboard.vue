@@ -1,7 +1,7 @@
 <template>
     <div class="min-h-screen bg-gradient-to-br from-[#f5f1e8] via-[#faf8f3] to-[#ebe5d9] font-inter">
         <!-- Navbar -->
-        <Navbar />
+        <Navbar :hide="showModal || showValidateModal" />
 
         <div class="p-8 relative overflow-hidden">
             <!-- Effet de parchemin en arrière-plan -->
@@ -45,6 +45,14 @@
                 :is-open="showModal"
                 @close="closeModal"
                 @quest-created="onQuestCreated"
+            />
+
+            <!-- Modal de Validation de Quête -->
+            <ValidateQuestModal
+                :is-open="showValidateModal"
+                :quest="selectedQuest"
+                @close="closeValidateModal"
+                @quest-validated="onQuestValidated"
             />
 
             <!-- Filtres et Tri -->
@@ -245,9 +253,18 @@
                     </div>
 
                     <!-- Badge échéance proche -->
-                    <div v-if="isExpiringSoon(quest.datePeremption) && quest.statut !== 'TERMINEE'" class="absolute bottom-3 right-3">
+                    <div v-if="isExpiringSoon(quest.datePeremption) && quest.statut !== 'TERMINEE'" class="absolute bottom-12 right-3">
                         <span class="text-2xl animate-pulse">⚠️</span>
                     </div>
+
+                    <!-- Bouton de validation -->
+                    <button
+                        @click.stop="openValidateModal(quest)"
+                        class="absolute bottom-3 right-3 px-3 py-1.5 bg-gradient-to-br from-secondary to-secondary-dark text-white rounded-lg font-cinzel text-xs shadow-[0_2px_8px_rgba(45,106,79,0.3)] hover:shadow-[0_4px_12px_rgba(45,106,79,0.5)] transition-all duration-300 hover:scale-105 border border-secondary-dark flex items-center gap-1.5"
+                    >
+                        <span>👁️</span>
+                        <span>A valider</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -259,12 +276,14 @@
 import { ref, computed, onMounted } from 'vue';
 import QuestService from '../services/QuestService';
 import QuickQuestModal from '../components/QuickQuestModal.vue';
+import ValidateQuestModal from '../components/ValidateQuestModal.vue';
 import Navbar from '../components/Navbar.vue';
 
 export default {
     name: 'QuestDashboard',
     components: {
         QuickQuestModal,
+        ValidateQuestModal,
         Navbar
     },
     setup() {
@@ -272,6 +291,8 @@ export default {
         const isLoading = ref(false);
         const error = ref('');
         const showModal = ref(false);
+        const showValidateModal = ref(false);
+        const selectedQuest = ref(null);
         const statusDropdownOpen = ref(false);
 
         // Filtres
@@ -411,13 +432,29 @@ export default {
             await loadQuests();
         };
 
+        // Gestion du modal de validation
+        const openValidateModal = (quest) => {
+            selectedQuest.value = quest;
+            showValidateModal.value = true;
+        };
+
+        const closeValidateModal = () => {
+            showValidateModal.value = false;
+            selectedQuest.value = null;
+        };
+
+        const onQuestValidated = async () => {
+            // Recharger les quêtes après validation
+            await loadQuests();
+        };
+
         // Formater le statut
         const formatStatus = (status) => {
             const statusMap = {
-                'nouvelle': 'Nouvelle',
-                'en_cours': 'En cours',
-                'terminee': 'Terminée',
-                'rejetee': 'Rejetée'
+                'NOUVELLE': 'Nouvelle',
+                'EN_COURS': 'En cours',
+                'TERMINEE': 'Terminée',
+                'REJETEE': 'Rejetée'
             };
             return statusMap[status] || status;
         };
@@ -425,10 +462,10 @@ export default {
         // Classe CSS du statut
         const getStatusClass = (status) => {
             const classes = {
-                'nouvelle': 'bg-primary text-dark-bg',
-                'en_cours': 'bg-secondary text-light-bg',
-                'terminee': 'bg-success text-dark-bg',
-                'rejetee': 'bg-accent text-light-bg'
+                'NOUVELLE': 'bg-primary text-dark-bg',
+                'EN_COURS': 'bg-secondary text-light-bg',
+                'TERMINEE': 'bg-success text-dark-bg',
+                'REJETEE': 'bg-accent text-light-bg'
             };
             return classes[status] || 'bg-txt-secondary text-light-bg';
         };
@@ -473,6 +510,8 @@ export default {
             filters,
             sortBy,
             showModal,
+            showValidateModal,
+            selectedQuest,
             statusDropdownOpen,
             statusOptions,
             toggleStatus,
@@ -480,6 +519,9 @@ export default {
             openModal,
             closeModal,
             onQuestCreated,
+            openValidateModal,
+            closeValidateModal,
+            onQuestValidated,
             formatStatus,
             getStatusClass,
             formatDate,
