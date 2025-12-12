@@ -95,6 +95,9 @@ public class QueteMapper {
         if (dto.getDatePeremption() != null) {
             entity.setDatePeremption(dto.getDatePeremption());
         }
+        if (dto.getStatut() != null) {
+            entity.setStatut(com.data.kanyh.model.StatutQuete.valueOf(dto.getStatut()));
+        }
 
         // Mettre à jour les spécialités requises si fournies
         if (dto.getSpecialitesRequisesIds() != null) {
