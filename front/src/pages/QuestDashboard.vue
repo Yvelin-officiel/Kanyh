@@ -1,7 +1,7 @@
 <template>
     <div class="min-h-screen bg-gradient-to-br from-[#f5f1e8] via-[#faf8f3] to-[#ebe5d9] font-inter">
         <!-- Navbar -->
-        <Navbar />
+        <Navbar :hide="showModal" />
 
         <div class="p-8 relative overflow-hidden">
             <!-- Effet de parchemin en arrière-plan -->
