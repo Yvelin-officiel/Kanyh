@@ -43,7 +43,7 @@ const specialiteIcons = {
 };
 
 const getSpecialiteIcon = (nom) => {
-    return specialiteIcons[nom] || '⚔️';
+    return specialiteIcons[nom];
 };
 
 // Charger les spécialités au montage
