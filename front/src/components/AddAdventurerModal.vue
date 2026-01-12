@@ -74,7 +74,7 @@
                                         :key="specialite.id" 
                                         :value="specialite.id"
                                     >
-                                        {{ getSpecialiteIcon(specialite.nom) }} {{ specialite.nom }}
+                                        {{ specialite.nom }}
                                     </option>
                                 </select>
                             </div>
@@ -82,7 +82,7 @@
                             <!-- Taux journalier -->
                             <div class="flex flex-col">
                                 <label for="modal-taux" class="input-label flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
-                                    <span class="text-base sm:text-lg md:text-xl">💰</span> <span class="hidden sm:inline">Taux journalier</span><span class="sm:hidden">Taux/j</span>
+                                    <span class="text-base sm:text-lg md:text-xl">💰</span> <span class="sm:inline">Taux/j</span>
                                 </label>
                                 <input
                                     id="modal-taux"
@@ -166,22 +166,7 @@ export default {
         const error = ref('');
         const specialites = ref([]);
 
-        // Icônes pour chaque spécialité
-        const specialiteIcons = {
-            'Guerrier': '⚔️',
-            'Mage': '🔮',
-            'Archer': '🏹',
-            'Rôdeur': '🌲',
-            'Voleur': '🗝️',
-            'Paladin': '✨',
-            'Druide': '🍃',
-            'Barde': '🎵'
-        };
-
-        const getSpecialiteIcon = (nom) => {
-            return specialiteIcons[nom] || '⚔️';
-        };
-
+ 
         // Charger les spécialités au montage
         onMounted(async () => {
             try {
@@ -234,8 +219,7 @@ export default {
             error,
             specialites,
             closeModal,
-            handleSubmit,
-            getSpecialiteIcon,
+            handleSubmit
         };
     }
 };
