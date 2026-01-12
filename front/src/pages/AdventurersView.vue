@@ -161,16 +161,18 @@
             <div class="p-6 space-y-2 text-sm font-cinzel flex-1">
               <!-- Spécialité -->
               <div class="flex items-center gap-2">
-                <span class="text-lg">🎯</span>
-                <span class="text-txt-secondary">{{ adventurer.specialite?.nom }}</span>
+               
+                <span class="text-lg text-txt-secondary">{{ adventurer.specialite?.nom }}</span>
               </div>
 
               <!-- Expérience -->
               <div class="flex items-center gap-2">
                 <span class="text-lg">⭐</span>
-                <div class="flex gap-0.5">
-                  <span v-for="i in 10" :key="i" class="text-sm"
-                    :class="i <= adventurer.niveau_experience ? 'text-primary' : 'text-gray-300'">★</span>
+                <div class="flex flex-col">
+                  <span class="text-txt-primary font-semibold">{{ adventurer.niveauExperience?.toLocaleString() || adventurer.niveau_experience?.toLocaleString() }} XP</span>
+                  <span class="text-xs font-bold" :class="getRangByExperience(adventurer.niveauExperience || adventurer.niveau_experience).couleur">
+                    {{ getRangByExperience(adventurer.niveauExperience || adventurer.niveau_experience).nom }}
+                  </span>
                 </div>
               </div>
 
@@ -183,7 +185,7 @@
               <!-- Disponibilité -->
               <div class="flex items-center gap-2">
                 <span class="text-lg">📅</span>
-                <span class="text-txt-secondary">{{ formatDate(adventurer.date_disponibilite) }}</span>
+                <span class="text-txt-secondary">{{ formatDate(adventurer.dateDisponibilite || adventurer.date_disponibilite) }}</span>
               </div>
             </div>
           </div>
@@ -316,12 +318,39 @@ export default {
 
     // Formater la date
     const formatDate = (dateString) => {
-      const date = new Date(dateString);
+      if (!dateString) return 'N/A';
+      // Ajouter T00:00:00 pour un parsing correct en temps local
+      const date = new Date(dateString + 'T00:00:00');
+      if (isNaN(date.getTime())) return 'Date invalide';
       return date.toLocaleDateString('fr-FR', {
         day: '2-digit',
         month: 'short',
         year: 'numeric'
       });
+    };
+
+    // Obtenir le rang selon l'expérience
+    const getRangByExperience = (exp) => {
+      if (exp >= 1823000) return { nom: 'Divinité', couleur: 'text-purple-600' };
+      if (exp >= 1215000) return { nom: 'Seigneur des Univers', couleur: 'text-purple-500' };
+      if (exp >= 810000) return { nom: 'Gardien Cosmique', couleur: 'text-indigo-600' };
+      if (exp >= 540000) return { nom: 'Héros Légendaire', couleur: 'text-indigo-500' };
+      if (exp >= 360000) return { nom: 'Caprice des Dieux', couleur: 'text-blue-600' };
+      if (exp >= 240000) return { nom: 'Titan', couleur: 'text-blue-500' };
+      if (exp >= 160000) return { nom: 'Tueur de Dragons', couleur: 'text-cyan-600' };
+      if (exp >= 105000) return { nom: 'Pourfendeur', couleur: 'text-cyan-500' };
+      if (exp >= 70000) return { nom: 'Fléau des Ténèbres', couleur: 'text-teal-600' };
+      if (exp >= 47000) return { nom: 'Tueur de Démons', couleur: 'text-teal-500' };
+      if (exp >= 32000) return { nom: 'Champion', couleur: 'text-green-600' };
+      if (exp >= 22000) return { nom: 'Elite', couleur: 'text-green-500' };
+      if (exp >= 15000) return { nom: 'Commandant', couleur: 'text-lime-600' };
+      if (exp >= 10000) return { nom: 'Capitaine', couleur: 'text-lime-500' };
+      if (exp >= 6600) return { nom: 'Guerrier', couleur: 'text-yellow-600' };
+      if (exp >= 4200) return { nom: 'Baroudeur', couleur: 'text-yellow-500' };
+      if (exp >= 2400) return { nom: 'Mercenaire', couleur: 'text-orange-600' };
+      if (exp >= 1200) return { nom: 'Combattant', couleur: 'text-orange-500' };
+      if (exp >= 400) return { nom: 'Débutant', couleur: 'text-amber-600' };
+      return { nom: 'Piou Piou', couleur: 'text-gray-500' };
     };
 
     // Formater la disponibilité
@@ -370,6 +399,7 @@ export default {
       resetFilters,
       formatDate,
       formatDisponibilite,
+      getRangByExperience,
       openAddModal,
       closeAddModal,
       handleAdventurerCreated
