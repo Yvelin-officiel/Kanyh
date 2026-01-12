@@ -107,7 +107,7 @@
                   <span class="text-2xl">📊</span>
                   Statistiques Totales
                 </h4>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 gap-4">
                   <div class="text-center">
                     <p class="text-2xl font-bold text-primary-dark">{{ quests.length }}</p>
                     <p class="text-sm text-txt-secondary font-cinzel">Quête{{ quests.length > 1 ? 's' : '' }}</p>
@@ -115,10 +115,6 @@
                   <div class="text-center">
                     <p class="text-2xl font-bold text-green-600">{{ totalExperience.toLocaleString() }}</p>
                     <p class="text-sm text-txt-secondary font-cinzel">XP Total</p>
-                  </div>
-                  <div class="text-center">
-                    <p class="text-2xl font-bold text-primary">{{ totalReward.toLocaleString() }}</p>
-                    <p class="text-sm text-txt-secondary font-cinzel">Or Total</p>
                   </div>
                 </div>
               </div>
