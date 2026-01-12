@@ -118,7 +118,6 @@ class QueteMapperTest {
         inputDTO.setPrime(2500.0);
         inputDTO.setDureeEstimee(10);
         inputDTO.setDatePeremption(LocalDate.of(2026, 6, 15));
-        inputDTO.setStatut("EN_COURS");
         inputDTO.setSpecialitesRequisesIds(null);
 
         // When
@@ -148,7 +147,6 @@ class QueteMapperTest {
         inputDTO.setPrime(100.0);
         inputDTO.setDureeEstimee(1);
         inputDTO.setDatePeremption(LocalDate.now());
-        inputDTO.setStatut("TERMINEE");
 
         Quete quete = queteMapper.toEntity(inputDTO);
 
@@ -262,7 +260,6 @@ class QueteMapperTest {
         inputDTO.setPrime(1000.0);
         inputDTO.setDureeEstimee(5);
         inputDTO.setDatePeremption(LocalDate.of(2025, 12, 31));
-        inputDTO.setStatut("NOUVELLE");
         inputDTO.setSpecialitesRequisesIds(Arrays.asList("1", "2"));
 
         Specialite specialite1 = new Specialite(1, "Archer");
@@ -287,7 +284,6 @@ class QueteMapperTest {
         inputDTO.setPrime(1000.0);
         inputDTO.setDureeEstimee(5);
         inputDTO.setDatePeremption(LocalDate.of(2025, 12, 31));
-        inputDTO.setStatut("NOUVELLE");
         inputDTO.setSpecialitesRequisesIds(Arrays.asList());
 
         Quete quete = queteMapper.toEntity(inputDTO);
@@ -305,7 +301,6 @@ class QueteMapperTest {
         inputDTO.setPrime(1000.0);
         inputDTO.setDureeEstimee(5);
         inputDTO.setDatePeremption(LocalDate.of(2025, 12, 31));
-        inputDTO.setStatut("NOUVELLE");
         inputDTO.setSpecialitesRequisesIds(Arrays.asList("999"));
 
         when(specialiteRepository.findById(999)).thenReturn(Optional.empty());
