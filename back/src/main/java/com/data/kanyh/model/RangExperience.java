@@ -1,0 +1,24 @@
+package com.data.kanyh.model;
+
+public enum RangExperience {
+    PIOU_PIOU,
+    DEBUTANT,
+    COMBATTANT,
+    MERCENAIRE,
+    BAROUDEUR,
+    GUERRIER,
+    CAPITAINE,
+    COMMANDANT,
+    ELITE,
+    CHAMPION,
+    TUEUR_DE_DEMONS,
+    FLEAU_DES_TENEBRES,
+    POURFENDEUR,
+    TUEURS_DE_DRAGON,
+    TITAN,
+    CAPRICE_DES_DIEUX,
+    HEROS_LEGENDAIRE,
+    GARDIEN_COSMIQUE,
+    SEIGNEUR_DES_UNIVERS,
+    DIVINITE
+}

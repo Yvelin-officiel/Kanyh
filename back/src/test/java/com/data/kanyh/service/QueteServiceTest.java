@@ -74,7 +74,6 @@ class QueteServiceTest {
         queteInputDTO.setPrime(2000.0);
         queteInputDTO.setDureeEstimee(10);
         queteInputDTO.setDatePeremption(LocalDate.of(2026, 6, 15));
-        queteInputDTO.setStatut("NOUVELLE");
     }
 
     // ========== Tests pour getAllQuetes() ==========
