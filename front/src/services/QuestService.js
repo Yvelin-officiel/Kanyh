@@ -142,6 +142,25 @@ class QuestService {
     }
   }
 
+  static async fetchAdventurerQuestsHistory(adventurerId) {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/quetes/historique/${adventurerId}`
+      );
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(
+        "Erreur lors de la récupération de l'historique des quêtes de l'aventurier:",
+        error
+      );
+      throw error;
+    }
+  }
+
   /**
    * Met à jour une quête
    * @param {number} id - L'ID de la quête

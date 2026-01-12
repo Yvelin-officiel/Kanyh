@@ -67,13 +67,35 @@
             </select>
           </div>
 
-          <!-- Recherche par niveau -->
+          <!-- Recherche par rang -->
           <div class="flex flex-col">
             <label class="text-sm font-cinzel text-txt-primary mb-2 flex items-center gap-2">
-              <span>⭐</span> Niveau Min.
+              <span>⭐</span> Rang Min.
             </label>
-            <input v-model.number="filters.niveauMin" type="number" min="0" max="10" placeholder="0-10"
-              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" />
+            <select v-model="filters.rangMin"
+              class="px-3 py-2 bg-white border-2 border-primary/40 rounded-lg font-cinzel focus:outline-none focus:ring-2 focus:ring-primary shadow-sm">
+              <option value="">Tous les rangs</option>
+              <option value="0">Piou Piou (> 0 XP)</option>
+              <option value="400">Débutant (> 400 XP)</option>
+              <option value="1200">Combattant (> 1 200 XP)</option>
+              <option value="2400">Mercenaire (> 2 400 XP)</option>
+              <option value="4200">Baroudeur (> 4 200 XP)</option>
+              <option value="6600">Guerrier (> 6 600 XP)</option>
+              <option value="10000">Capitaine (> 10 000 XP)</option>
+              <option value="15000">Commandant (> 15 000 XP)</option>
+              <option value="22000">Elite (> 22 000 XP)</option>
+              <option value="32000">Champion (> 32 000 XP)</option>
+              <option value="47000">Tueur de Démons (> 47 000 XP)</option>
+              <option value="70000">Fléau des Ténèbres (> 70 000 XP)</option>
+              <option value="105000">Pourfendeur (> 105 000 XP)</option>
+              <option value="160000">Tueur de Dragons (> 160 000 XP)</option>
+              <option value="240000">Titan (> 240 000 XP)</option>
+              <option value="360000">Caprice des Dieux (> 360 000 XP)</option>
+              <option value="540000">Héros Légendaire (> 540 000 XP)</option>
+              <option value="810000">Gardien Cosmique (> 810 000 XP)</option>
+              <option value="1215000">Seigneur des Univers (> 1M215 XP)</option>
+              <option value="1823000">Divinité (> 1M823 XP)</option>
+            </select>
           </div>
 
           <!-- Tri -->
@@ -141,11 +163,12 @@
           <div v-for="adventurer in filteredAdventurers" :key="adventurer.id"
             class="adventurer-card bg-white/95 rounded-xl shadow-md border-2 border-primary/25 overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-300 cursor-pointer hover:border-primary/50 flex flex-col">
             <!-- Badge disponibilité -->
-            <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-cinzel font-bold z-10" :class="adventurer.disponibilite === 'disponible'
-                ? 'bg-success text-dark-bg'
-                : adventurer.disponibilite === 'en mission'
-                  ? 'bg-accent text-light-bg'
-                  : 'bg-primary text-dark-bg'
+            <div class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-cinzel font-bold z-10 shadow-md" :class="
+                adventurer.disponibilite?.toLowerCase() === 'disponible'
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 text-white border-2 border-green-400/50'
+                  : adventurer.disponibilite?.toLowerCase() === 'en_mission' || adventurer.disponibilite?.toLowerCase() === 'en mission'
+                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white border-2 border-orange-400/50'
+                    : 'bg-gradient-to-r from-gray-500 to-gray-600 text-white border-2 border-gray-400/50'
               ">
               {{ formatDisponibilite(adventurer.disponibilite) }}
             </div>
@@ -188,6 +211,15 @@
                 <span class="text-txt-secondary">{{ formatDate(adventurer.dateDisponibilite || adventurer.date_disponibilite) }}</span>
               </div>
             </div>
+
+            <!-- Bouton Détails -->
+            <div class="p-4 pt-0">
+              <button @click="openHistoryModal(adventurer)"
+                class="w-full px-4 py-2 bg-gradient-to-r from-primary/10 to-primary/5 hover:from-primary/20 hover:to-primary/10 border-2 border-primary/30 hover:border-primary/50 rounded-lg font-cinzel text-primary-dark font-semibold transition-all duration-200 hover:scale-[1.02] flex items-center justify-center gap-2">
+                <span class="text-lg">📜</span>
+                Historique des Quêtes
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -195,6 +227,13 @@
 
     <!-- Modale d'ajout d'aventurier -->
     <AddAdventurerModal :isOpen="isAddModalOpen" @close="closeAddModal" @adventurer-created="handleAdventurerCreated" />
+    
+    <!-- Modale historique des quêtes -->
+    <AdventurerQuestsHistory 
+      :isOpen="isHistoryModalOpen" 
+      :adventurerId="selectedAdventurerId"
+      :adventurerName="selectedAdventurerName"
+      @close="closeHistoryModal" />
     </div>
   </div>
 </template>
@@ -204,12 +243,14 @@ import { ref, onMounted, computed } from 'vue';
 import { getAdventurers } from '../services/adventurersService';
 import { fetchSpecialties } from '../services/SpecialiteService';
 import AddAdventurerModal from '../components/AddAdventurerModal.vue';
+import AdventurerQuestsHistory from '../components/AdventurerQuestsHistory.vue';
 import Navbar from '../components/Navbar.vue';
 
 export default {
   name: 'AdventurersView',
   components: {
     AddAdventurerModal,
+    AdventurerQuestsHistory,
     Navbar
   },
   setup() {
@@ -218,12 +259,15 @@ export default {
     const loading = ref(false);
     const error = ref(null);
     const isAddModalOpen = ref(false);
+    const isHistoryModalOpen = ref(false);
+    const selectedAdventurerId = ref(null);
+    const selectedAdventurerName = ref('');
 
     // Filtres
     const filters = ref({
       nom: '',
       specialite: '',
-      niveauMin: null
+      rangMin: ''
     });
 
     // Tri
@@ -270,10 +314,11 @@ export default {
         );
       }
 
-      // Filtrer par niveau minimum
-      if (filters.value.niveauMin !== null && filters.value.niveauMin !== '') {
+      // Filtrer par rang minimum (basé sur l'expérience)
+      if (filters.value.rangMin !== null && filters.value.rangMin !== '') {
+        const expMin = parseInt(filters.value.rangMin);
         result = result.filter(adv =>
-          adv.niveau_experience >= filters.value.niveauMin
+          (adv.niveauExperience || adv.niveau_experience || 0) >= expMin
         );
       }
 
@@ -302,7 +347,7 @@ export default {
     const hasActiveFilters = computed(() => {
       return filters.value.nom !== '' ||
         filters.value.specialite !== '' ||
-        (filters.value.niveauMin !== null && filters.value.niveauMin !== '') ||
+        filters.value.rangMin !== '' ||
         sortBy.value !== '';
     });
 
@@ -311,7 +356,7 @@ export default {
       filters.value = {
         nom: '',
         specialite: '',
-        niveauMin: null
+        rangMin: ''
       };
       sortBy.value = '';
     };
@@ -355,12 +400,15 @@ export default {
 
     // Formater la disponibilité
     const formatDisponibilite = (disponibilite) => {
+      if (!disponibilite) return 'Indisponible';
+      const dispLower = disponibilite.toLowerCase();
       const map = {
         'disponible': 'Disponible',
+        'en_mission': 'En mission',
         'en mission': 'En mission',
         'en repos': 'En repos'
       };
-      return map[disponibilite] || disponibilite;
+      return map[dispLower] || disponibilite;
     };
 
     // Gestion de la modale
@@ -379,6 +427,19 @@ export default {
       console.log('Aventurier créé avec succès:', newAdventurer);
     };
 
+    // Gestion de la modale d'historique
+    const openHistoryModal = (adventurer) => {
+      selectedAdventurerId.value = adventurer.id;
+      selectedAdventurerName.value = adventurer.nom;
+      isHistoryModalOpen.value = true;
+    };
+
+    const closeHistoryModal = () => {
+      isHistoryModalOpen.value = false;
+      selectedAdventurerId.value = null;
+      selectedAdventurerName.value = '';
+    };
+
     // Charger les données au montage du composant
     onMounted(() => {
       loadAdventurers();
@@ -395,6 +456,9 @@ export default {
       filteredAdventurers,
       hasActiveFilters,
       isAddModalOpen,
+      isHistoryModalOpen,
+      selectedAdventurerId,
+      selectedAdventurerName,
       loadAdventurers,
       resetFilters,
       formatDate,
@@ -402,7 +466,9 @@ export default {
       getRangByExperience,
       openAddModal,
       closeAddModal,
-      handleAdventurerCreated
+      handleAdventurerCreated,
+      openHistoryModal,
+      closeHistoryModal
     };
   }
 };
