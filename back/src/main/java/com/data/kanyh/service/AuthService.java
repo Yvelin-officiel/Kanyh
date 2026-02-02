@@ -2,6 +2,7 @@ package com.data.kanyh.service;
 
 import com.data.kanyh.dto.AuthRequest;
 import com.data.kanyh.dto.AuthResponse;
+import com.data.kanyh.dto.UserDTO;
 import com.data.kanyh.exception.AlreadyExists;
 import com.data.kanyh.exception.InvalidCredentials;
 import com.data.kanyh.model.Role;
@@ -50,6 +51,7 @@ public class AuthService {
         }
 
         String token = jwtUtil.generateToken(user.getUserName(), user.getRoles());
-        return new AuthResponse(token);
+        UserDTO userDto = new UserDTO(user.getId(), user.getUserName(), user.getRoles());
+        return new AuthResponse(token, userDto);
     }
 }
