@@ -47,25 +47,38 @@
                     
                     <!-- Auth Links -->
                     <div class="flex items-center gap-3 ml-4 pl-4 border-l-2 border-primary/30">
-                        <router-link 
-                            :to="{ name: 'Login' }"
-                            class="nav-link font-cinzel text-lg text-txt-primary hover:text-primary transition-colors relative"
-                            active-class="text-primary font-bold"
-                        >
-                            <span class="flex items-center gap-2">
-                                <span class="text-xl">🗝️</span>
-                                Connexion
-                            </span>
-                        </router-link>
-                        <router-link 
-                            :to="{ name: 'Register' }"
-                            class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg font-cinzel"
-                        >
-                            <span class="flex items-center gap-2">
-                                <span class="text-xl">⚔️</span>
-                                S'inscrire
-                            </span>
-                        </router-link>
+                        <template v-if="!isAuthenticated">
+                            <router-link 
+                                :to="{ name: 'Login' }"
+                                class="nav-link font-cinzel text-lg text-txt-primary hover:text-primary transition-colors relative"
+                                active-class="text-primary font-bold"
+                            >
+                                <span class="flex items-center gap-2">
+                                    <span class="text-xl">🗝️</span>
+                                    Connexion
+                                </span>
+                            </router-link>
+                            <router-link 
+                                :to="{ name: 'Register' }"
+                                class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg font-cinzel"
+                            >
+                                <span class="flex items-center gap-2">
+                                    <span class="text-xl">⚔️</span>
+                                    S'inscrire
+                                </span>
+                            </router-link>
+                        </template>
+                        <template v-else>
+                            <button
+                                @click="handleLogout"
+                                class="bg-accent hover:bg-accent/80 text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg font-cinzel"
+                            >
+                                <span class="flex items-center gap-2">
+                                    <span class="text-xl">🚪</span>
+                                    Déconnexion
+                                </span>
+                            </button>
+                        </template>
                     </div>
                 </div>
 
@@ -132,27 +145,40 @@
                         <div class="border-t-2 border-primary/20 my-2"></div>
                         
                         <!-- Auth Links -->
-                        <router-link 
-                            :to="{ name: 'Login' }"
-                            @click="closeMobileMenu"
-                            class="nav-link-mobile font-cinzel text-lg text-txt-primary hover:text-primary transition-colors p-3 rounded-lg hover:bg-primary/10"
-                            active-class="bg-primary/10 text-primary font-bold"
-                        >
-                            <span class="flex items-center gap-2">
-                                <span class="text-xl">🗝️</span>
-                                Connexion
-                            </span>
-                        </router-link>
-                        <router-link 
-                            :to="{ name: 'Register' }"
-                            @click="closeMobileMenu"
-                            class="nav-link-mobile font-cinzel text-lg bg-primary hover:bg-primary-dark text-white transition-colors p-3 rounded-lg shadow-md"
-                        >
-                            <span class="flex items-center gap-2">
-                                <span class="text-xl">⚔️</span>
-                                S'inscrire
-                            </span>
-                        </router-link>
+                        <template v-if="!isAuthenticated">
+                            <router-link 
+                                :to="{ name: 'Login' }"
+                                @click="closeMobileMenu"
+                                class="nav-link-mobile font-cinzel text-lg text-txt-primary hover:text-primary transition-colors p-3 rounded-lg hover:bg-primary/10"
+                                active-class="bg-primary/10 text-primary font-bold"
+                            >
+                                <span class="flex items-center gap-2">
+                                    <span class="text-xl">🗝️</span>
+                                    Connexion
+                                </span>
+                            </router-link>
+                            <router-link 
+                                :to="{ name: 'Register' }"
+                                @click="closeMobileMenu"
+                                class="nav-link-mobile font-cinzel text-lg bg-primary hover:bg-primary-dark text-white transition-colors p-3 rounded-lg shadow-md"
+                            >
+                                <span class="flex items-center gap-2">
+                                    <span class="text-xl">⚔️</span>
+                                    S'inscrire
+                                </span>
+                            </router-link>
+                        </template>
+                        <template v-else>
+                            <button
+                                @click="handleLogout"
+                                class="nav-link-mobile font-cinzel text-lg bg-accent hover:bg-accent/80 text-white transition-colors p-3 rounded-lg shadow-md"
+                            >
+                                <span class="flex items-center gap-2">
+                                    <span class="text-xl">🚪</span>
+                                    Déconnexion
+                                </span>
+                            </button>
+                        </template>
                     </div>
                 </div>
             </transition>
@@ -161,12 +187,27 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { AuthService } from '../services/AuthService.js';
 
 export default {
     name: 'Navbar',
     setup() {
+        const router = useRouter();
+        const route = useRoute();
         const mobileMenuOpen = ref(false);
+        const isAuthenticated = ref(AuthService.isAuthenticated());
+
+        // Watch for route changes to update authentication status
+        watch(() => route.path, () => {
+            isAuthenticated.value = AuthService.isAuthenticated();
+        });
+
+        // Check authentication status on mount
+        onMounted(() => {
+            isAuthenticated.value = AuthService.isAuthenticated();
+        });
 
         const toggleMobileMenu = () => {
             mobileMenuOpen.value = !mobileMenuOpen.value;
@@ -176,10 +217,19 @@ export default {
             mobileMenuOpen.value = false;
         };
 
+        const handleLogout = () => {
+            AuthService.logout();
+            isAuthenticated.value = false;
+            closeMobileMenu();
+            router.push({ name: 'Home' });
+        };
+
         return {
             mobileMenuOpen,
+            isAuthenticated,
             toggleMobileMenu,
             closeMobileMenu,
+            handleLogout,
         };
     }
 };

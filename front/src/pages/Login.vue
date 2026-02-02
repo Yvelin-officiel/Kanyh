@@ -24,12 +24,24 @@
           <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
 
           <!-- Error Message -->
-          <div v-if="errorMessage" class="mb-6 p-4 bg-accent/20 border border-accent rounded-lg">
-            <p class="text-accent flex items-center gap-2">
-              <span>⚠</span>
-              <span>{{ errorMessage }}</span>
-            </p>
-          </div>
+          <transition name="error-slide">
+            <div v-if="errorMessage" class="mb-6 p-4 bg-accent/20 border-2 border-accent rounded-lg animate-shake">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl flex-shrink-0">⚠️</span>
+                <div class="flex-1">
+                  <p class="text-accent font-medium mb-1">Erreur de connexion</p>
+                  <p class="text-accent/90 text-sm">{{ errorMessage }}</p>
+                </div>
+                <button 
+                  @click="errorMessage = ''"
+                  class="text-accent hover:text-accent/70 transition-colors flex-shrink-0"
+                  aria-label="Fermer"
+                >
+                  <span class="text-xl">✕</span>
+                </button>
+              </div>
+            </div>
+          </transition>
 
           <form @submit.prevent="handleLogin" class="space-y-6">
             <!-- Username Field -->
@@ -121,22 +133,50 @@ export default {
     const handleLogin = async () => {
       // Reset error message
       errorMessage.value = '';
+      
+      // Validation côté client
+      if (!formData.value.userName.trim()) {
+        errorMessage.value = 'Le nom d\'utilisateur est requis.';
+        return;
+      }
+      
+      if (!formData.value.password) {
+        errorMessage.value = 'Le mot de passe est requis.';
+        return;
+      }
+      
+      if (formData.value.password.length < 6) {
+        errorMessage.value = 'Le mot de passe doit contenir au moins 6 caractères.';
+        return;
+      }
+      
       isLoading.value = true;
 
       try {
         const response = await AuthService.login({
-          userName: formData.value.userName,
+          userName: formData.value.userName.trim(),
           password: formData.value.password
         });
 
         // Login successful - redirect to dashboard or home
         if (response.token) {
-          // You can redirect to different pages based on user role if needed
-          router.push({ name: 'Home' });
+          // Redirection avec un court délai pour permettre à l'utilisateur de voir le succès
+          setTimeout(() => {
+            router.push({ name: 'Home' });
+          }, 300);
         }
 
       } catch (error) {
-        errorMessage.value = error.message || 'Identifiants invalides';
+        console.error('Erreur de connexion:', error);
+        
+        // Afficher le message d'erreur avec plus de contexte
+        if (error.type === 'NETWORK_ERROR') {
+          errorMessage.value = '🚫 ' + error.message;
+        } else if (error.status === 401) {
+          errorMessage.value = '🔒 ' + error.message;
+        } else {
+          errorMessage.value = error.message || 'Une erreur inattendue s\'est produite. Veuillez réessayer.';
+        }
       } finally {
         isLoading.value = false;
       }
@@ -164,7 +204,39 @@ export default {
   }
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
 .max-w-md {
   animation: fadeIn 0.5s ease-out;
+}
+
+/* Animations pour les messages d'erreur */
+.error-slide-enter-active {
+  animation: slideDown 0.3s ease-out;
+}
+
+.error-slide-leave-active {
+  animation: slideDown 0.3s ease-in reverse;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+  }
 }
 </style>
