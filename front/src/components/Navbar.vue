@@ -187,9 +187,9 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { AuthService } from '../services/AuthService.js';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuth } from '../composables/useAuth.js';
 
 export default {
     name: 'Navbar',
@@ -201,19 +201,8 @@ export default {
     },
     setup() {
         const router = useRouter();
-        const route = useRoute();
+        const { isAuthenticated, logout } = useAuth();
         const mobileMenuOpen = ref(false);
-        const isAuthenticated = ref(AuthService.isAuthenticated());
-
-        // Watch for route changes to update authentication status
-        watch(() => route.path, () => {
-            isAuthenticated.value = AuthService.isAuthenticated();
-        });
-
-        // Check authentication status on mount
-        onMounted(() => {
-            isAuthenticated.value = AuthService.isAuthenticated();
-        });
 
         const toggleMobileMenu = () => {
             mobileMenuOpen.value = !mobileMenuOpen.value;
@@ -224,8 +213,7 @@ export default {
         };
 
         const handleLogout = () => {
-            AuthService.logout();
-            isAuthenticated.value = false;
+            logout();
             closeMobileMenu();
             router.push({ name: 'Home' });
         };

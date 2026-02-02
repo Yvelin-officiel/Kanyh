@@ -114,7 +114,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import Navbar from '../components/Navbar.vue';
-import { AuthService } from '../services/AuthService.js';
+import { useAuth } from '../composables/useAuth.js';
 
 export default {
   name: 'Login',
@@ -123,6 +123,7 @@ export default {
   },
   setup() {
     const router = useRouter();
+    const { login } = useAuth();
     const formData = ref({
       userName: '',
       password: ''
@@ -153,7 +154,7 @@ export default {
       isLoading.value = true;
 
       try {
-        const response = await AuthService.login({
+        const response = await login({
           userName: formData.value.userName.trim(),
           password: formData.value.password
         });

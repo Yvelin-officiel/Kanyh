@@ -110,11 +110,15 @@ export const AuthService = {
 
       const data = await response.json();
       
-      // Store token in localStorage
+      // Store token and user data in localStorage
       if (data.token) {
         localStorage.setItem('authToken', data.token);
       } else {
         throw new Error('Token non reçu du serveur.');
+      }
+      
+      if (data.user) {
+        localStorage.setItem('userData', JSON.stringify(data.user));
       }
 
       return data;
@@ -133,6 +137,7 @@ export const AuthService = {
    */
   logout() {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
   },
 
   /**
@@ -149,5 +154,29 @@ export const AuthService = {
    */
   isAuthenticated() {
     return !!this.getToken();
+  },
+
+  /**
+   * Get stored user data
+   * @returns {Object|null} User data
+   */
+  getUserData() {
+    const userData = localStorage.getItem('userData');
+    if (!userData) return null;
+    try {
+      return JSON.parse(userData);
+    } catch (error) {
+      console.error('Erreur lors du parsing des données utilisateur:', error);
+      return null;
+    }
+  },
+
+  /**
+   * Get user role
+   * @returns {string|null} User role (ADMIN, ASSISTANT, COMMANDITAIRE)
+   */
+  getUserRole() {
+    const userData = this.getUserData();
+    return userData?.roles || null;
   }
 };

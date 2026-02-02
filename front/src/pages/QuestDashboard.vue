@@ -257,9 +257,9 @@
                         <span class="text-2xl animate-pulse">⚠️</span>
                     </div>
 
-                    <!-- Bouton de validation (uniquement pour les quêtes nouvelles) -->
+                    <!-- Bouton de validation (uniquement pour les quêtes nouvelles et pour ADMIN/ASSISTANT) -->
                     <button
-                        v-if="quest.statut === 'NOUVELLE'"
+                        v-if="quest.statut === 'NOUVELLE' && canValidateQuest"
                         @click.stop="openValidateModal(quest)"
                         class="absolute bottom-3 right-3 px-3 py-1.5 bg-gradient-to-br from-secondary to-secondary-dark text-white rounded-lg font-cinzel text-xs shadow-[0_2px_8px_rgba(45,106,79,0.3)] hover:shadow-[0_4px_12px_rgba(45,106,79,0.5)] transition-all duration-300 hover:scale-105 border border-secondary-dark flex items-center gap-1.5"
                     >
@@ -275,7 +275,9 @@
 
 <script>
 import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import QuestService from '../services/QuestService';
+import { useAuth } from '../composables/useAuth';
 import QuickQuestModal from '../components/QuickQuestModal.vue';
 import ValidateQuestModal from '../components/ValidateQuestModal.vue';
 import Navbar from '../components/Navbar.vue';
@@ -288,6 +290,8 @@ export default {
         Navbar
     },
     setup() {
+        const router = useRouter();
+        const { isAuthenticated, canValidateQuest } = useAuth();
         const quests = ref([]);
         const isLoading = ref(false);
         const error = ref('');
@@ -355,7 +359,7 @@ export default {
                 quests.value = await QuestService.fetchQuests();
             } catch (err) {
                 console.error('Erreur lors du chargement des quêtes:', err);
-                error.value = 'Erreur lors du chargement des quêtes';
+                error.value = err.message || 'Erreur lors du chargement des quêtes';
             } finally {
                 isLoading.value = false;
             }
@@ -421,6 +425,10 @@ export default {
 
         // Gestion de la modal
         const openModal = () => {
+            if (!isAuthenticated.value) {
+                router.push('/login');
+                return;
+            }
             showModal.value = true;
         };
 
@@ -435,6 +443,9 @@ export default {
 
         // Gestion du modal de validation
         const openValidateModal = (quest) => {
+            if (!canValidateQuest.value) {
+                return;
+            }
             selectedQuest.value = quest;
             showValidateModal.value = true;
         };
@@ -529,6 +540,7 @@ export default {
             isExpiringSoon,
             getStatCount,
             getTotalPrime,
+            canValidateQuest,
         };
     }
 };
