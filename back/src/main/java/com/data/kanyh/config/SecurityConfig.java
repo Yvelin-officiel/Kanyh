@@ -31,9 +31,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
+                        .disable()
+                )
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/**").authenticated()
@@ -42,7 +47,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/**").authenticated()
                         .anyRequest().authenticated()
                 )
-
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable);
 

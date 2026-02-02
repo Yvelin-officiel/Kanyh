@@ -46,6 +46,9 @@ MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalie
 MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (19, 'Gareth Stonefist', 8100, 18, 410, 'DISPONIBLE', CURRENT_DATE);
 MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (20, 'Astrid Stargazer', 4800, 14, 310, 'DISPONIBLE', CURRENT_DATE);
 
--- Reset sequences to start after the pre-loaded data (dynamically based on current max ID)
+MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (1, 'commanditaire1', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'COMMANDITAIRE');
+MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (2, 'assistant1', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'ASSISTANT');
+
 ALTER TABLE specialite ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM specialite);
 ALTER TABLE aventurier ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM aventurier);
+ALTER TABLE users ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM users);
