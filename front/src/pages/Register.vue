@@ -24,20 +24,37 @@
           <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary rounded-br-lg"></div>
 
           <!-- Success Message -->
-          <div v-if="successMessage" class="mb-6 p-4 bg-secondary/20 border border-secondary rounded-lg">
-            <p class="text-secondary-dark flex items-center gap-2">
-              <span>✓</span>
-              <span>{{ successMessage }}</span>
-            </p>
-          </div>
+          <transition name="success-slide">
+            <div v-if="successMessage" class="mb-6 p-4 bg-secondary/20 border-2 border-secondary rounded-lg">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl flex-shrink-0">✅</span>
+                <div class="flex-1">
+                  <p class="text-secondary-dark font-medium mb-1">Inscription réussie !</p>
+                  <p class="text-secondary-dark/90 text-sm">{{ successMessage }}</p>
+                </div>
+              </div>
+            </div>
+          </transition>
 
           <!-- Error Message -->
-          <div v-if="errorMessage" class="mb-6 p-4 bg-accent/20 border border-accent rounded-lg">
-            <p class="text-accent flex items-center gap-2">
-              <span>⚠</span>
-              <span>{{ errorMessage }}</span>
-            </p>
-          </div>
+          <transition name="error-slide">
+            <div v-if="errorMessage" class="mb-6 p-4 bg-accent/20 border-2 border-accent rounded-lg animate-shake">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl flex-shrink-0">⚠️</span>
+                <div class="flex-1">
+                  <p class="text-accent font-medium mb-1">Erreur d'inscription</p>
+                  <p class="text-accent/90 text-sm">{{ errorMessage }}</p>
+                </div>
+                <button 
+                  @click="errorMessage = ''"
+                  class="text-accent hover:text-accent/70 transition-colors flex-shrink-0"
+                  aria-label="Fermer"
+                >
+                  <span class="text-xl">✕</span>
+                </button>
+              </div>
+            </div>
+          </transition>
 
           <form @submit.prevent="handleRegister" class="space-y-6">
             <!-- Username Field -->
@@ -194,15 +211,39 @@ export default {
       errorMessage.value = '';
       successMessage.value = '';
 
+      // Validation côté client - Nom d'utilisateur
+      if (!formData.value.userName.trim()) {
+        errorMessage.value = 'Le nom d\'utilisateur est requis.';
+        return;
+      }
+      
+      if (formData.value.userName.length < 3) {
+        errorMessage.value = 'Le nom d\'utilisateur doit contenir au moins 3 caractères.';
+        return;
+      }
+      
+      if (formData.value.userName.length > 50) {
+        errorMessage.value = 'Le nom d\'utilisateur ne peut pas dépasser 50 caractères.';
+        return;
+      }
+
       // Validate passwords match
       if (formData.value.password !== confirmPassword.value) {
-        errorMessage.value = 'Les mots de passe ne correspondent pas';
+        errorMessage.value = '🔒 Les mots de passe ne correspondent pas. Veuillez vérifier.';
         return;
       }
 
       // Validate password format
       if (!isPasswordValid.value) {
-        errorMessage.value = 'Le mot de passe ne respecte pas les critères requis';
+        const missingCriteria = [];
+        if (!passwordValidation.value.length) missingCriteria.push('10-20 caractères');
+        if (!passwordValidation.value.uppercase) missingCriteria.push('une majuscule');
+        if (!passwordValidation.value.lowercase) missingCriteria.push('une minuscule');
+        if (!passwordValidation.value.digit) missingCriteria.push('un chiffre');
+        if (!passwordValidation.value.special) missingCriteria.push('un caractère spécial');
+        if (!passwordValidation.value.noSpace) missingCriteria.push('aucun espace');
+        
+        errorMessage.value = `Le mot de passe doit contenir : ${missingCriteria.join(', ')}.`;
         return;
       }
 
@@ -210,11 +251,11 @@ export default {
 
       try {
         await AuthService.register({
-          userName: formData.value.userName,
+          userName: formData.value.userName.trim(),
           password: formData.value.password
         });
 
-        successMessage.value = 'Inscription réussie ! Redirection vers la connexion...';
+        successMessage.value = '✨ Votre compte a été créé avec succès ! Redirection vers la page de connexion...';
 
         // Redirect to login after 2 seconds
         setTimeout(() => {
@@ -222,7 +263,18 @@ export default {
         }, 2000);
 
       } catch (error) {
-        errorMessage.value = error.message || 'Une erreur est survenue lors de l\'inscription';
+        console.error('Erreur d\'inscription:', error);
+        
+        // Afficher le message d'erreur avec plus de contexte
+        if (error.type === 'NETWORK_ERROR') {
+          errorMessage.value = '🚫 ' + error.message;
+        } else if (error.status === 409) {
+          errorMessage.value = '🚫 Ce nom d\'utilisateur est déjà pris. Veuillez en choisir un autre.';
+        } else if (error.status === 400) {
+          errorMessage.value = '⚠️ ' + error.message;
+        } else {
+          errorMessage.value = error.message || 'Une erreur inattendue s\'est produite. Veuillez réessayer.';
+        }
       } finally {
         isLoading.value = false;
       }
@@ -254,7 +306,48 @@ export default {
   }
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
 .max-w-md {
   animation: fadeIn 0.5s ease-out;
+}
+
+/* Animations pour les messages d'erreur */
+.error-slide-enter-active {
+  animation: slideDown 0.3s ease-out;
+}
+
+.error-slide-leave-active {
+  animation: slideDown 0.3s ease-in reverse;
+}
+
+/* Animations pour les messages de succès */
+.success-slide-enter-active {
+  animation: slideDown 0.3s ease-out;
+}
+
+.success-slide-leave-active {
+  animation: slideDown 0.3s ease-in reverse;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 200px;
+  }
 }
 </style>

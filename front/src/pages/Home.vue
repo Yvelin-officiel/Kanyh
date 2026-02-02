@@ -161,7 +161,7 @@
                 </div>
 
                 <!-- Carte 2 -->
-                <div class="feature-card bg-white/95 rounded-2xl shadow-lg border-2 border-secondary/30 p-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
+                <div v-if="canAccessAdventurers" class="feature-card bg-white/95 rounded-2xl shadow-lg border-2 border-secondary/30 p-8 hover:shadow-xl hover:scale-105 transition-all duration-300">
                     <div class="text-center space-y-4">
                         <div class="text-6xl mb-4">⚔️</div>
                         <h3 class="text-2xl font-cinzel text-secondary-dark">Aventuriers</h3>
