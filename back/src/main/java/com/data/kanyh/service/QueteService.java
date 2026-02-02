@@ -4,22 +4,32 @@ import com.data.kanyh.dto.QueteDTO;
 import com.data.kanyh.dto.QueteInputDTO;
 import com.data.kanyh.exception.NotFoundException;
 import com.data.kanyh.mapper.QueteMapper;
+import com.data.kanyh.model.ParticipationEquipe;
 import com.data.kanyh.model.Quete;
+import com.data.kanyh.model.StatutQuete;
 import com.data.kanyh.repository.AventurierRepository;
+import com.data.kanyh.repository.EquipeRepository;
 import com.data.kanyh.repository.QueteRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class QueteService {
 
     private final QueteRepository queteRepository;
     private final AventurierRepository aventurierRepository;
+    private final EquipeRepository equipeRepository;
     private final QueteMapper queteMapper;
+    private final ReposSamService reposSamService;
+    private final FinancialWorkflowService financialWorkflowService;
     private static final String NOT_FOUND = "Quête non trouvée";
 
     /**
@@ -77,17 +87,102 @@ public class QueteService {
      * du DTO d'entrée sont appliqués à l'entité existante. Les autres champs conservent
      * leur valeur actuelle.
      * </p>
+     * <p>
+     * Si le statut de la quête passe à TERMINEE, le repos SAM est automatiquement
+     * appliqué à tous les aventuriers de l'équipe.
+     * </p>
      *
      * @param id    l'identifiant de la quête à mettre à jour
      * @param input le {@link QueteInputDTO} contenant les nouvelles valeurs
      * @return le {@link QueteDTO} de la quête mise à jour
      * @throws NotFoundException si aucune quête n'existe avec cet identifiant
      */
+    @Transactional
     public QueteDTO updateQuete(Long id, QueteInputDTO input) {
         Quete quete = queteRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND));
+
+        StatutQuete ancienStatut = quete.getStatut();
+
         queteMapper.updateEntityFromDTO(input, quete);
-        return queteMapper.toDTO(queteRepository.save(quete));
+        Quete queteUpdated = queteRepository.save(quete);
+
+        // HOOK 1 : Quête démarre (EN_COURS) → Verser acompte 20%
+        if (queteUpdated.getStatut() == StatutQuete.EN_COURS && ancienStatut != StatutQuete.EN_COURS) {
+            try {
+                financialWorkflowService.traiterQueteEnCours(queteUpdated);
+                log.info("Acompte 20% versé pour la quête ID {}", queteUpdated.getId());
+            } catch (Exception e) {
+                log.error("Erreur versement acompte quête ID {}: {}",
+                         queteUpdated.getId(), e.getMessage());
+            }
+        }
+
+        // HOOK 2 : Quête réussie (TERMINEE) → Repos SAM + Solde 80% + Salaires complets
+        if (queteUpdated.getStatut() == StatutQuete.TERMINEE && ancienStatut != StatutQuete.TERMINEE) {
+            appliquerReposSurQueteTerminee(queteUpdated);
+
+            try {
+                financialWorkflowService.traiterQueteTerminee(queteUpdated);
+                log.info("Solde 80% versé et salaires payés pour la quête ID {}", queteUpdated.getId());
+            } catch (Exception e) {
+                log.error("Erreur traitement financier quête ID {}: {}",
+                         queteUpdated.getId(), e.getMessage());
+            }
+        }
+
+        // HOOK 3 : Quête échouée (ECHOUEE) → Repos SAM + Salaires avec malus 40%
+        if (queteUpdated.getStatut() == StatutQuete.ECHOUEE && ancienStatut != StatutQuete.ECHOUEE) {
+            appliquerReposSurQueteTerminee(queteUpdated); // Repos SAM appliqué aussi en cas d'échec
+
+            try {
+                financialWorkflowService.traiterQueteEchouee(queteUpdated);
+                log.info("Salaires avec malus payés pour la quête échouée ID {}", queteUpdated.getId());
+            } catch (Exception e) {
+                log.error("Erreur traitement financier quête échouée ID {}: {}",
+                         queteUpdated.getId(), e.getMessage());
+            }
+        }
+
+        return queteMapper.toDTO(queteUpdated);
+    }
+
+    /**
+     * Applique le repos SAM à tous les aventuriers d'une quête terminée.
+     *
+     * @param quete la quête terminée
+     */
+    private void appliquerReposSurQueteTerminee(Quete quete) {
+        if (quete.getEquipeId() == null) {
+            log.warn("Quête {} terminée sans équipe assignée", quete.getId());
+            return;
+        }
+
+        equipeRepository.findById(quete.getEquipeId()).ifPresent(equipe -> {
+            List<ParticipationEquipe> participations = equipe.getParticipations();
+
+            for (ParticipationEquipe participation : participations) {
+                try {
+                    // Mettre à jour dateRetour si non définie
+                    if (participation.getDateRetour() == null) {
+                        participation.setDateRetour(LocalDate.now());
+                    }
+
+                    // Appliquer le repos SAM
+                    reposSamService.appliquerRepos(
+                            participation.getAventurier().getId(),
+                            participation,
+                            quete
+                    );
+
+                    log.info("Repos SAM appliqué à l'aventurier {} pour la quête {}",
+                             participation.getAventurier().getId(), quete.getId());
+                } catch (Exception e) {
+                    log.error("Erreur lors de l'application du repos pour l'aventurier {} : {}",
+                             participation.getAventurier().getId(), e.getMessage());
+                }
+            }
+        });
     }
 
     /**

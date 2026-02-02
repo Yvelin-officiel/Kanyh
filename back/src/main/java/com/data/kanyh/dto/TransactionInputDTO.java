@@ -5,27 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionDTO {
+public class TransactionInputDTO {
 
-    private Long id;
+    @NotNull(message = "Le type ne peut pas être null")
     private String type;
 
     @NotNull(message = "Le montant ne peut pas être null")
     private Double montant;
 
     private String description;
-    private LocalDateTime dateTransaction;
     private Long queteId;
-    private String queteNom;
     private Long aventurierId;
-    private String aventurierNom;
     private Long equipementId;
-    private String equipementNom;
-    private String initiePar;
-    private Double soldeApres;
 }
