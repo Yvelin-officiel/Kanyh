@@ -45,4 +45,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidCredentials(InvalidCredentials ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
+
+    @ExceptionHandler(SoldeInsuffisantException.class)
+    public ResponseEntity<String> handleSoldeInsuffisant(SoldeInsuffisantException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

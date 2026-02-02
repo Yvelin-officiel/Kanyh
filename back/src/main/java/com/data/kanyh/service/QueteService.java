@@ -29,6 +29,7 @@ public class QueteService {
     private final EquipeRepository equipeRepository;
     private final QueteMapper queteMapper;
     private final ReposSamService reposSamService;
+    private final FinancialWorkflowService financialWorkflowService;
     private static final String NOT_FOUND = "Quête non trouvée";
 
     /**
@@ -95,9 +96,41 @@ public class QueteService {
         queteMapper.updateEntityFromDTO(input, quete);
         Quete queteUpdated = queteRepository.save(quete);
 
-        // Si la quête passe à TERMINEE, appliquer le repos SAM automatiquement
+        // HOOK 1 : Quête démarre (EN_COURS) → Verser acompte 20%
+        if (queteUpdated.getStatut() == StatutQuete.EN_COURS && ancienStatut != StatutQuete.EN_COURS) {
+            try {
+                financialWorkflowService.traiterQueteEnCours(queteUpdated);
+                log.info("Acompte 20% versé pour la quête ID {}", queteUpdated.getId());
+            } catch (Exception e) {
+                log.error("Erreur versement acompte quête ID {}: {}",
+                         queteUpdated.getId(), e.getMessage());
+            }
+        }
+
+        // HOOK 2 : Quête réussie (TERMINEE) → Repos SAM + Solde 80% + Salaires complets
         if (queteUpdated.getStatut() == StatutQuete.TERMINEE && ancienStatut != StatutQuete.TERMINEE) {
             appliquerReposSurQueteTerminee(queteUpdated);
+
+            try {
+                financialWorkflowService.traiterQueteTerminee(queteUpdated);
+                log.info("Solde 80% versé et salaires payés pour la quête ID {}", queteUpdated.getId());
+            } catch (Exception e) {
+                log.error("Erreur traitement financier quête ID {}: {}",
+                         queteUpdated.getId(), e.getMessage());
+            }
+        }
+
+        // HOOK 3 : Quête échouée (ECHOUEE) → Repos SAM + Salaires avec malus 40%
+        if (queteUpdated.getStatut() == StatutQuete.ECHOUEE && ancienStatut != StatutQuete.ECHOUEE) {
+            appliquerReposSurQueteTerminee(queteUpdated); // Repos SAM appliqué aussi en cas d'échec
+
+            try {
+                financialWorkflowService.traiterQueteEchouee(queteUpdated);
+                log.info("Salaires avec malus payés pour la quête échouée ID {}", queteUpdated.getId());
+            } catch (Exception e) {
+                log.error("Erreur traitement financier quête échouée ID {}: {}",
+                         queteUpdated.getId(), e.getMessage());
+            }
         }
 
         return queteMapper.toDTO(queteUpdated);
