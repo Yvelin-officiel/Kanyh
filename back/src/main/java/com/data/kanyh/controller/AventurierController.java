@@ -1,6 +1,7 @@
 package com.data.kanyh.controller;
 
 import com.data.kanyh.dto.AventurierDTO;
+import com.data.kanyh.dto.AventurierDetailDTO;
 import com.data.kanyh.dto.AventurierInputDTO;
 import com.data.kanyh.dto.AventurierUpdateDTO;
 import com.data.kanyh.service.AventurierService;
@@ -33,8 +34,8 @@ public class AventurierController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AventurierDTO> getAventurierById(@PathVariable Long id) {
-        AventurierDTO dto = aventurierService.getAventurierById(id);
+    public ResponseEntity<AventurierDetailDTO> getAventurierById(@PathVariable Long id) {
+        AventurierDetailDTO dto = aventurierService.getAventurierDetail(id);
         return ResponseEntity.ok(dto);
     }
 
