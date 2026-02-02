@@ -30,8 +30,8 @@
         </p>
       </div>
 
-      <!-- Bouton Création Rapide -->
-      <div class="mb-6 flex justify-end">
+      <!-- Bouton Création Rapide (uniquement pour ADMIN et ASSISTANT) -->
+      <div v-if="canCreateAdventurer" class="mb-6 flex justify-end">
         <button @click="openAddModal"
           class="px-6 py-3 bg-gradient-to-br from-primary to-primary-dark text-white rounded-xl font-cinzel text-lg shadow-[0_4px_12px_rgba(197,160,89,0.3)] hover:shadow-[0_6px_20px_rgba(197,160,89,0.5)] transition-all duration-300 hover:scale-105 border border-primary-dark relative overflow-hidden">
           <span class="flex items-center gap-2">
@@ -242,6 +242,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { getAdventurers } from '../services/adventurersService';
 import { fetchSpecialties } from '../services/SpecialiteService';
+import { useAuth } from '../composables/useAuth';
 import AddAdventurerModal from '../components/AddAdventurerModal.vue';
 import AdventurerQuestsHistory from '../components/AdventurerQuestsHistory.vue';
 import Navbar from '../components/Navbar.vue';
@@ -254,6 +255,7 @@ export default {
     Navbar
   },
   setup() {
+    const { userRole } = useAuth();
     const adventurers = ref([]);
     const specialites = ref([]);
     const loading = ref(false);
@@ -262,6 +264,11 @@ export default {
     const isHistoryModalOpen = ref(false);
     const selectedAdventurerId = ref(null);
     const selectedAdventurerName = ref('');
+
+    // Vérifier si l'utilisateur peut créer des aventuriers (ADMIN ou ASSISTANT)
+    const canCreateAdventurer = computed(() => {
+      return userRole.value === 'ADMIN' || userRole.value === 'ASSISTANT';
+    });
 
     // Filtres
     const filters = ref({
@@ -280,6 +287,7 @@ export default {
       try {
         adventurers.value = await getAdventurers();
       } catch (err) {
+        // Afficher le message d'erreur spécifique de l'API (401, 403, etc.)
         error.value = err.message || 'Erreur lors du chargement des aventuriers';
         console.error('Erreur:', err);
       } finally {
@@ -459,6 +467,7 @@ export default {
       isHistoryModalOpen,
       selectedAdventurerId,
       selectedAdventurerName,
+      canCreateAdventurer,
       loadAdventurers,
       resetFilters,
       formatDate,
@@ -473,8 +482,6 @@ export default {
   }
 };
 </script>
-
-
 
 <style scoped>
 /* Animation des particules dorées en mode clair */
