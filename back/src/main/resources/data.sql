@@ -46,9 +46,47 @@ MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalie
 MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (19, 'Gareth Stonefist', 8100, 18, 410, 'DISPONIBLE', CURRENT_DATE);
 MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (20, 'Astrid Stargazer', 4800, 14, 310, 'DISPONIBLE', CURRENT_DATE);
 
+-- Users
 MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (1, 'commanditaire1', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'COMMANDITAIRE');
+MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (3, 'commanditaire2', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'COMMANDITAIRE');
+MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (4, 'commanditaire3', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'COMMANDITAIRE');
+MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (5, 'commanditaire4', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'COMMANDITAIRE');
+MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (6, 'commanditaire5', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'COMMANDITAIRE');
 MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (2, 'assistant1', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'ASSISTANT');
 
+-- Quetes
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (1, 1, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Défendre le village contre les raids de gobelins', 5, 'Protection du village de Lumebois', 2500, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (2, 1, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Retrouver l''amulette volée dans les cryptes anciennes', 8, 'Récupération de l''artefact sacré', 4500, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (3, 3, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Protéger la caravane marchande jusqu''à la capitale', 3, 'Escorte de la caravane royale', 1800, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (4, 3, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Éliminer le dragon terrorisant la région', 12, 'Extermination du dragon des marais', 8000, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (5, 4, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Cartographier les anciennes ruines et rapporter des artéfacts', 6, 'Exploration des ruines elfiques', 3000, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (6, 4, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Libérer le prince retenu par des bandits', 7, 'Sauvetage du prince kidnappé', 5500, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (7, 5, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Chasser les esprits corrompus du temple', 4, 'Purification du temple maudit', 2800, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (8, 5, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Capturer ou éliminer le basilic des montagnes noires', 10, 'Chasse au basilic légendaire', 7200, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (9, 6, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Infiltrer et démanteler la secte des ombres', 9, 'Investigation sur la secte obscure', 4800, 'NOUVELLE');
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
+    VALUES (10, 6, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Acheminer des potions de guérison vers les villages isolés', 2, 'Livraison de remèdes urgents', 1500, 'NOUVELLE');
+
+ALTER TABLE quetes ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM quetes);
 ALTER TABLE specialite ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM specialite);
 ALTER TABLE aventurier ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM aventurier);
 ALTER TABLE users ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM users);
+ALTER TABLE quetes ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM quetes);
