@@ -1,7 +1,7 @@
 // Service pour gérer les aventuriers
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import { fetchWithAuth } from '../utils/api';
+import { fetchWithAuth } from "../utils/api";
 
 /**
  * Récupère la liste des aventuriers
@@ -19,7 +19,10 @@ export async function getAdventurers() {
  */
 export async function getAdventurerById(id) {
   const response = await fetchWithAuth(`${API_BASE_URL}/aventuriers/${id}`);
-  return await response.json();
+  const data = await response.json();
+  // L'API renvoie un objet enveloppé avec la structure: { aventurier, joursTotauxRepos, missionsEnCours, missionsPassees, reposActuel }
+  // On extrait uniquement l'objet aventurier pour maintenir la compatibilité avec le code existant
+  return data.aventurier || data;
 }
 
 /**

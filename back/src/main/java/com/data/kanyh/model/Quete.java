@@ -24,6 +24,7 @@ public class Quete {
     private Integer dureeEstimee;
     private LocalDate datePeremption;
     private Integer experienceGagnee;
+    private Integer experienceRecommandee;
     private LocalDate dateCreation;
 
     @Enumerated(EnumType.STRING)

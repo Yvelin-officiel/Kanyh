@@ -15,6 +15,7 @@ public class QueteDTO {
     private Integer dureeEstimee;
     private LocalDate datePeremption;
     private Integer experienceGagnee;
+    private Integer experienceRecommandee;
     private String statut;
     private Long commanditaireId;
     private Long equipeId;
