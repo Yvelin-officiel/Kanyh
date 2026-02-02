@@ -30,5 +30,8 @@ public class QueteInputDTO {
     @NotBlank(message = "Le statut de la quête ne peut pas être vide")
     private String statut;
 
+    @NotNull(message = "L'identifiant du commanditaire ne peut pas être null")
+    private Long commanditaireId;
+
     private List<String> specialitesRequisesIds;
 }

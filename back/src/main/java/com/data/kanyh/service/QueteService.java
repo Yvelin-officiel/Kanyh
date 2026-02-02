@@ -33,6 +33,17 @@ public class QueteService {
     }
 
     /**
+     * Récupère toutes les quêtes associées à un commanditaire spécifique.
+     * @param id l'identifiant du commanditaire
+     * @return une liste de {@link QueteDTO} associées au commanditaire
+     */
+    public List<QueteDTO> getAllByCommanditaireId(Long id) {
+        return queteRepository.findByCommanditaireId(id).stream()
+                .map(queteMapper::toDTO)
+                .toList();
+    }
+
+    /**
      * Récupère une quête par son identifiant.
      * @param id l'identifiant de la quête à récupérer
      * @return le {@link QueteDTO} correspondant à l'identifiant fourni

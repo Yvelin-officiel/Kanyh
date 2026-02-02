@@ -1,5 +1,6 @@
 package com.data.kanyh.repository;
 
+import com.data.kanyh.dto.QueteDTO;
 import com.data.kanyh.model.Quete;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,6 @@ public interface QueteRepository extends JpaRepository<Quete, Long> {
             "WHERE p.aventurier.id = :aventurierId " +
             "ORDER BY q.dateCreation DESC")
     List<Quete> findQuetesByAventurierId(@Param("aventurierId") Long aventurierId);
+
+    List<Quete> findByCommanditaireId(Long commanditaireId);
 }
