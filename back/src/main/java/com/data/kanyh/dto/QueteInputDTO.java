@@ -24,6 +24,9 @@ public class QueteInputDTO {
     @PositiveOrZero(message = "La durée estimée de la quête doit être positive ou zéro")
     private Integer dureeEstimee;
 
+    @PositiveOrZero(message = "L'expérience recommandée doit être positive ou zéro")
+    private Integer experienceRecommandee;
+
     @NotNull(message = "La date de péremption de la quête ne peut pas être nulle")
     private LocalDate datePeremption;
 
