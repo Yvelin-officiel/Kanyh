@@ -200,15 +200,15 @@
     </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue';
 import Navbar from '../components/Navbar.vue';
+import { useAuth } from '../composables/useAuth';
 
-export default {
-    name: 'Home',
-    components: {
-        Navbar
-    }
-};
+const { isAuthenticated } = useAuth();
+
+// Autoriser l'accès à la page des aventuriers uniquement si authentifié
+const canAccessAdventurers = computed(() => isAuthenticated.value);
 </script>
 
 <style scoped>

@@ -82,13 +82,14 @@
                             <!-- Taux journalier -->
                             <div class="flex flex-col">
                                 <label for="modal-taux" class="input-label flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
-                                    <span class="text-base sm:text-lg md:text-xl">💰</span> <span class="sm:inline">Taux/j</span>
+                                    <span class="text-base sm:text-lg md:text-xl">💰</span> <span class="sm:inline">Taux/j (Or)</span>
                                 </label>
                                 <input
                                     id="modal-taux"
                                     v-model.number="formData.tauxJournalierBase"
                                     type="number"
-                                    placeholder="100"
+                                    step="0.001"
+                                    placeholder="0.100"
                                     class="input-field text-sm sm:text-base"
                                     min="0"
                                     required
@@ -159,7 +160,7 @@ export default {
         const formData = ref({
             nom: '',
             specialiteId: '',
-            tauxJournalierBase: 100,
+            tauxJournalierBase: 0.100,
         });
 
         const isSubmitting = ref(false);
@@ -192,7 +193,7 @@ export default {
             formData.value = {
                 nom: '',
                 specialiteId: '',
-                tauxJournalierBase: 100,
+                tauxJournalierBase: 0.100,
             };
             error.value = '';
         };
