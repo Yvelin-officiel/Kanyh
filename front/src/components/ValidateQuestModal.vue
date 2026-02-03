@@ -74,7 +74,11 @@ const toggleSpecialite = (id) => {
 watch(() => props.isOpen, (newValue) => {
     if (newValue && props.quest) {
         error.value = '';
-        selectedSpecialites.value = props.quest.specialitesRequises || [];
+        // Extraire les IDs si ce sont des objets, sinon utiliser directement les valeurs
+        const specialitesRequises = props.quest.specialitesRequises || [];
+        selectedSpecialites.value = specialitesRequises.map(spec => 
+            typeof spec === 'object' && spec !== null ? spec.id : spec
+        );
         generatedTeam.value = null;
         teamAdventurers.value = [];
         showTeamPreview.value = false;
