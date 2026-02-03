@@ -85,8 +85,47 @@ MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, descrip
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
     VALUES (10, 6, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Acheminer des potions de guérison vers les villages isolés', 2, 'Livraison de remèdes urgents', 1500, 'NOUVELLE');
 
+-- Équipes
+MERGE INTO equipes (id, nom, date_depart, date_retour_prevue, cout_total, ratio_rentabilite) KEY(id)
+    VALUES (1, 'Les Griffes d''Acier', DATEADD('DAY', -20, CURRENT_DATE), DATEADD('DAY', -13, CURRENT_DATE), 5250, 1.4);
+
+MERGE INTO equipes (id, nom, date_depart, date_retour_prevue, cout_total, ratio_rentabilite) KEY(id)
+    VALUES (2, 'Les Ombres Silencieuses', DATEADD('DAY', -15, CURRENT_DATE), DATEADD('DAY', -10, CURRENT_DATE), 3500, 1.6);
+
+MERGE INTO equipes (id, nom, date_depart, date_retour_prevue, cout_total, ratio_rentabilite) KEY(id)
+    VALUES (3, 'Les Gardiens de la Lumière', DATEADD('DAY', -25, CURRENT_DATE), DATEADD('DAY', -19, CURRENT_DATE), 4100, 1.3);
+
+-- Participations équipe
+MERGE INTO participation_equipe (id, equipe_id, aventurier_id, date_affectation, date_retour, etat, gain_experience) KEY(id)
+    VALUES (1, 1, 2, DATEADD('DAY', -20, CURRENT_DATE), DATEADD('DAY', -13, CURRENT_DATE), 'TERMINE', 500);
+
+MERGE INTO participation_equipe (id, equipe_id, aventurier_id, date_affectation, date_retour, etat, gain_experience) KEY(id)
+    VALUES (2, 1, 8, DATEADD('DAY', -20, CURRENT_DATE), DATEADD('DAY', -13, CURRENT_DATE), 'TERMINE', 500);
+
+MERGE INTO participation_equipe (id, equipe_id, aventurier_id, date_affectation, date_retour, etat, gain_experience) KEY(id)
+    VALUES (3, 2, 3, DATEADD('DAY', -15, CURRENT_DATE), DATEADD('DAY', -10, CURRENT_DATE), 'TERMINE', 400);
+
+MERGE INTO participation_equipe (id, equipe_id, aventurier_id, date_affectation, date_retour, etat, gain_experience) KEY(id)
+    VALUES (4, 3, 7, DATEADD('DAY', -25, CURRENT_DATE), DATEADD('DAY', -19, CURRENT_DATE), 'TERMINE', 450);
+
+-- Quêtes terminées pour commanditaire 1
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut, equipe_id, experience_gagnee) KEY(id)
+    VALUES (11, 1, DATEADD('DAY', -20, CURRENT_DATE), DATEADD('DAY', 10, CURRENT_DATE), 'Élimination des bandits sur la route commerciale', 7, 'Sécurisation de la route', 3000, 'TERMINEE', 1, 500);
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut, equipe_id, experience_gagnee) KEY(id)
+    VALUES (12, 1, DATEADD('DAY', -15, CURRENT_DATE), DATEADD('DAY', 15, CURRENT_DATE), 'Recherche d''artefacts magiques dans les cavernes', 5, 'Exploration des cavernes', 2500, 'TERMINEE', 2, 400);
+
+-- Quêtes terminées pour commanditaire 2
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut, equipe_id, experience_gagnee) KEY(id)
+    VALUES (13, 3, DATEADD('DAY', -25, CURRENT_DATE), DATEADD('DAY', 5, CURRENT_DATE), 'Défense du convoi marchand contre les pillards', 6, 'Protection du convoi', 3200, 'TERMINEE', 1, 450);
+
+MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut, equipe_id, experience_gagnee) KEY(id)
+    VALUES (14, 3, DATEADD('DAY', -18, CURRENT_DATE), DATEADD('DAY', 12, CURRENT_DATE), 'Récupération de documents volés', 4, 'Vol de documents', 1800, 'TERMINEE', 3, 300);
+
 ALTER TABLE quetes ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM quetes);
 ALTER TABLE specialite ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM specialite);
 ALTER TABLE aventurier ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM aventurier);
 ALTER TABLE users ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM users);
 ALTER TABLE quetes ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM quetes);
+ALTER TABLE equipes ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM equipes);
+ALTER TABLE participation_equipe ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM participation_equipe);
