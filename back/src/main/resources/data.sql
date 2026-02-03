@@ -25,26 +25,26 @@ MERGE INTO specialite (id, nom) KEY(id) VALUES (23, '⚔️ Spadassin');
 MERGE INTO specialite (id, nom) KEY(id) VALUES (24, '💫 Enchanteur');
 
 -- Aventuriers
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (1, 'Aria Merveilleuse', 2500, 1, 250, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (2, 'Thoran Forgehammer', 6800, 8, 350, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (3, 'Luna Shadowstep', 4200, 7, 300, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (4, 'Eldrin Stormcaller', 9500, 6, 450, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (5, 'Sylvana Leafwhisper', 1800, 3, 200, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (6, 'Marcus Swiftbow', 5400, 5, 320, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (7, 'Celestia Lightbringer', 8200, 10, 400, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (8, 'Ragnar Ironshield', 4600, 11, 280, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (9, 'Zephyr Windwalker', 3100, 20, 260, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (10, 'Morgana Spiritcaller', 7300, 9, 370, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (11, 'Kael Fireheart', 5900, 13, 340, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (12, 'Seraphine Songweaver', 2200, 15, 220, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (13, 'Drake Valorheart', 9800, 12, 480, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (14, 'Nyx Voidwalker', 8700, 21, 420, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (15, 'Thalion Earthshaper', 4100, 3, 290, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (16, 'Isolde Frostweaver', 6500, 4, 360, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (17, 'Viktor Bladedancer', 5600, 23, 330, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (18, 'Lyra Mooncharm', 3400, 24, 270, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (19, 'Gareth Stonefist', 8100, 18, 410, 'DISPONIBLE', CURRENT_DATE);
-MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (20, 'Astrid Stargazer', 4800, 14, 310, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (1, 'Aria Merveilleuse', 2500, 1, 0.25, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (2, 'Thoran Forgehammer', 6800, 8, 0.35, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (3, 'Luna Shadowstep', 4200, 7, 0.3, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (4, 'Eldrin Stormcaller', 9500, 6, 0.45, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (5, 'Sylvana Leafwhisper', 1800, 3, 0.2, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (6, 'Marcus Swiftbow', 5400, 5, 0.32, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (7, 'Celestia Lightbringer', 8200, 10, 0.4, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (8, 'Ragnar Ironshield', 4600, 11, 0.28, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (9, 'Zephyr Windwalker', 3100, 20, 0.26, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (10, 'Morgana Spiritcaller', 7300, 9, 0.37, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (11, 'Kael Fireheart', 5900, 13, 0.34, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (12, 'Seraphine Songweaver', 2200, 15, 0.22, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (13, 'Drake Valorheart', 9800, 12, 0.48, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (14, 'Nyx Voidwalker', 8700, 21, 0.42, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (15, 'Thalion Earthshaper', 4100, 3, 0.29, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (16, 'Isolde Frostweaver', 6500, 4, 0.36, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (17, 'Viktor Bladedancer', 5600, 23, 0.33, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (18, 'Lyra Mooncharm', 3400, 24, 0.27, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (19, 'Gareth Stonefist', 8100, 18, 0.41, 'DISPONIBLE', CURRENT_DATE);
+MERGE INTO aventurier (id, nom, niveau_experience, specialite_id, taux_journalier_base, disponibilite, date_disponibilite) KEY(id) VALUES (20, 'Astrid Stargazer', 4800, 14, 0.31, 'DISPONIBLE', CURRENT_DATE);
 
 -- Users
 MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (1, 'commanditaire1', '$2a$10$AafbEtxpXCEuaxPpjEnPRuRG97l2aLfvsNJay5yato3YgXfTd9SdC', 'COMMANDITAIRE');
@@ -56,44 +56,44 @@ MERGE INTO users (id, user_name, password, roles) KEY(id) VALUES (2, 'assistant1
 
 -- Quetes
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (1, 1, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Défendre le village contre les raids de gobelins', 5, 'Protection du village de Lumebois', 2500, 'NOUVELLE');
+    VALUES (1, 1, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Défendre le village contre les raids de gobelins', 5, 'Protection du village de Lumebois', 1, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (2, 1, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Retrouver l''amulette volée dans les cryptes anciennes', 8, 'Récupération de l''artefact sacré', 4500, 'NOUVELLE');
+    VALUES (2, 1, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Retrouver l''amulette volée dans les cryptes anciennes', 8, 'Récupération de l''artefact sacré', 2, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (3, 3, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Protéger la caravane marchande jusqu''à la capitale', 3, 'Escorte de la caravane royale', 1800, 'NOUVELLE');
+    VALUES (3, 3, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Protéger la caravane marchande jusqu''à la capitale', 3, 'Escorte de la caravane royale', 1, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (4, 3, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Éliminer le dragon terrorisant la région', 12, 'Extermination du dragon des marais', 8000, 'NOUVELLE');
+    VALUES (4, 3, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Éliminer le dragon terrorisant la région', 12, 'Extermination du dragon des marais', 2, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (5, 4, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Cartographier les anciennes ruines et rapporter des artéfacts', 6, 'Exploration des ruines elfiques', 3000, 'NOUVELLE');
+    VALUES (5, 4, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Cartographier les anciennes ruines et rapporter des artéfacts', 6, 'Exploration des ruines elfiques', 3, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (6, 4, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Libérer le prince retenu par des bandits', 7, 'Sauvetage du prince kidnappé', 5500, 'NOUVELLE');
+    VALUES (6, 4, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Libérer le prince retenu par des bandits', 7, 'Sauvetage du prince kidnappé', 4, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (7, 5, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Chasser les esprits corrompus du temple', 4, 'Purification du temple maudit', 2800, 'NOUVELLE');
+    VALUES (7, 5, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Chasser les esprits corrompus du temple', 4, 'Purification du temple maudit', 1, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (8, 5, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Capturer ou éliminer le basilic des montagnes noires', 10, 'Chasse au basilic légendaire', 7200, 'NOUVELLE');
+    VALUES (8, 5, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Capturer ou éliminer le basilic des montagnes noires', 10, 'Chasse au basilic légendaire', 2, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (9, 6, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Infiltrer et démanteler la secte des ombres', 9, 'Investigation sur la secte obscure', 4800, 'NOUVELLE');
+    VALUES (9, 6, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Infiltrer et démanteler la secte des ombres', 9, 'Investigation sur la secte obscure', 5, 'NOUVELLE');
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut) KEY(id)
-    VALUES (10, 6, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Acheminer des potions de guérison vers les villages isolés', 2, 'Livraison de remèdes urgents', 1500, 'NOUVELLE');
+    VALUES (10, 6, CURRENT_DATE, DATEADD('DAY', 30, CURRENT_DATE), 'Acheminer des potions de guérison vers les villages isolés', 2, 'Livraison de remèdes urgents', 1, 'NOUVELLE');
 
 -- Équipes
 MERGE INTO equipes (id, nom, date_depart, date_retour_prevue, cout_total, ratio_rentabilite) KEY(id)
-    VALUES (1, 'Les Griffes d''Acier', DATEADD('DAY', -20, CURRENT_DATE), DATEADD('DAY', -13, CURRENT_DATE), 5250, 1.4);
+    VALUES (1, 'Les Griffes d''Acier', DATEADD('DAY', -20, CURRENT_DATE), DATEADD('DAY', -13, CURRENT_DATE), 3, 1.4);
 
 MERGE INTO equipes (id, nom, date_depart, date_retour_prevue, cout_total, ratio_rentabilite) KEY(id)
-    VALUES (2, 'Les Ombres Silencieuses', DATEADD('DAY', -15, CURRENT_DATE), DATEADD('DAY', -10, CURRENT_DATE), 3500, 1.6);
+    VALUES (2, 'Les Ombres Silencieuses', DATEADD('DAY', -15, CURRENT_DATE), DATEADD('DAY', -10, CURRENT_DATE), 4, 1.6);
 
 MERGE INTO equipes (id, nom, date_depart, date_retour_prevue, cout_total, ratio_rentabilite) KEY(id)
-    VALUES (3, 'Les Gardiens de la Lumière', DATEADD('DAY', -25, CURRENT_DATE), DATEADD('DAY', -19, CURRENT_DATE), 4100, 1.3);
+    VALUES (3, 'Les Gardiens de la Lumière', DATEADD('DAY', -25, CURRENT_DATE), DATEADD('DAY', -19, CURRENT_DATE), 1, 1.3);
 
 -- Participations équipe
 MERGE INTO participation_equipe (id, equipe_id, aventurier_id, date_affectation, date_retour, etat, gain_experience) KEY(id)
@@ -110,17 +110,17 @@ MERGE INTO participation_equipe (id, equipe_id, aventurier_id, date_affectation,
 
 -- Quêtes terminées pour commanditaire 1
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut, equipe_id, experience_gagnee) KEY(id)
-    VALUES (11, 1, DATEADD('DAY', -20, CURRENT_DATE), DATEADD('DAY', 10, CURRENT_DATE), 'Élimination des bandits sur la route commerciale', 7, 'Sécurisation de la route', 3000, 'TERMINEE', 1, 500);
+    VALUES (11, 1, DATEADD('DAY', -20, CURRENT_DATE), DATEADD('DAY', 10, CURRENT_DATE), 'Élimination des bandits sur la route commerciale', 7, 'Sécurisation de la route', 3, 'TERMINEE', 1, 500);
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut, equipe_id, experience_gagnee) KEY(id)
-    VALUES (12, 1, DATEADD('DAY', -15, CURRENT_DATE), DATEADD('DAY', 15, CURRENT_DATE), 'Recherche d''artefacts magiques dans les cavernes', 5, 'Exploration des cavernes', 2500, 'TERMINEE', 2, 400);
+    VALUES (12, 1, DATEADD('DAY', -15, CURRENT_DATE), DATEADD('DAY', 15, CURRENT_DATE), 'Recherche d''artefacts magiques dans les cavernes', 5, 'Exploration des cavernes', 2.5, 'TERMINEE', 2, 400);
 
 -- Quêtes terminées pour commanditaire 2
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut, equipe_id, experience_gagnee) KEY(id)
-    VALUES (13, 3, DATEADD('DAY', -25, CURRENT_DATE), DATEADD('DAY', 5, CURRENT_DATE), 'Défense du convoi marchand contre les pillards', 6, 'Protection du convoi', 3200, 'TERMINEE', 1, 450);
+    VALUES (13, 3, DATEADD('DAY', -25, CURRENT_DATE), DATEADD('DAY', 5, CURRENT_DATE), 'Défense du convoi marchand contre les pillards', 6, 'Protection du convoi', 3.2, 'TERMINEE', 1, 450);
 
 MERGE INTO quetes (id, commanditaire_id, date_creation, date_peremption, description, duree_estimee, nom, prime, statut, equipe_id, experience_gagnee) KEY(id)
-    VALUES (14, 3, DATEADD('DAY', -18, CURRENT_DATE), DATEADD('DAY', 12, CURRENT_DATE), 'Récupération de documents volés', 4, 'Vol de documents', 1800, 'TERMINEE', 3, 300);
+    VALUES (14, 3, DATEADD('DAY', -18, CURRENT_DATE), DATEADD('DAY', 12, CURRENT_DATE), 'Récupération de documents volés', 4, 'Vol de documents', 1.8, 'TERMINEE', 3, 300);
 
 ALTER TABLE quetes ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM quetes);
 ALTER TABLE specialite ALTER COLUMN id RESTART WITH (SELECT COALESCE(MAX(id), 0) + 1 FROM specialite);
