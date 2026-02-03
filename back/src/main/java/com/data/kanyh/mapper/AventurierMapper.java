@@ -9,6 +9,8 @@ import com.data.kanyh.repository.SpecialiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class AventurierMapper {
 
@@ -48,6 +50,8 @@ public class AventurierMapper {
         aventurier.setSpecialite(specialite);
 
         aventurier.setTauxJournalierBase(dto.getTauxJournalierBase());
+        aventurier.setDisponibilite("DISPONIBLE");
+        aventurier.setDateDisponibilite(LocalDate.now());
         return aventurier;
     }
 
