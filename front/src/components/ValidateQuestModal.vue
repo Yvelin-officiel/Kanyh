@@ -2,6 +2,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { fetchSpecialties } from '../services/SpecialiteService';
 import QuestService from '../services/QuestService';
+import { getAdventurerById } from '../services/adventurersService';
 
 const props = defineProps({
     isOpen: {
@@ -20,6 +21,10 @@ const selectedSpecialites = ref([]);
 const isSubmitting = ref(false);
 const error = ref('');
 const specialites = ref([]);
+const generatedTeam = ref(null);
+const teamAdventurers = ref([]);
+const isGeneratingTeam = ref(false);
+const showTeamPreview = ref(false);
 
 const formData = ref({
     nom: '',
@@ -69,7 +74,14 @@ const toggleSpecialite = (id) => {
 watch(() => props.isOpen, (newValue) => {
     if (newValue && props.quest) {
         error.value = '';
-        selectedSpecialites.value = props.quest.specialitesRequises || [];
+        // Extraire les IDs si ce sont des objets, sinon utiliser directement les valeurs
+        const specialitesRequises = props.quest.specialitesRequises || [];
+        selectedSpecialites.value = specialitesRequises.map(spec => 
+            typeof spec === 'object' && spec !== null ? spec.id : spec
+        );
+        generatedTeam.value = null;
+        teamAdventurers.value = [];
+        showTeamPreview.value = false;
         formData.value = {
             nom: props.quest.nom || '',
             description: props.quest.description || '',
@@ -85,16 +97,12 @@ const closeModal = () => {
     emit('close');
 };
 
-const handleSubmit = async () => {
-    if (formData.value.statut !== 'REJETEE' && selectedSpecialites.value.length === 0) {
-        error.value = 'Veuillez sélectionner au moins une spécialité';
-        return;
-    }
-
-    isSubmitting.value = true;
+const generateTeamPreview = async () => {
+    isGeneratingTeam.value = true;
     error.value = '';
 
     try {
+        // Mettre à jour la quête d'abord
         const updateData = {
             nom: formData.value.nom,
             description: formData.value.description,
@@ -106,13 +114,45 @@ const handleSubmit = async () => {
         };
 
         await QuestService.updateQuest(props.quest.id, updateData);
-        emit('quest-validated', updateData);
-        closeModal();
+
+        // Générer l'équipe
+        generatedTeam.value = await QuestService.generateTeam(props.quest.id, 4);
+
+        // Récupérer les détails de chaque aventurier
+        const adventurersPromises = generatedTeam.value.aventurierIds.map(id => getAdventurerById(id));
+        teamAdventurers.value = await Promise.all(adventurersPromises);
+
+        showTeamPreview.value = true;
     } catch (err) {
-        console.error('Erreur lors de la validation de la quête:', err);
-        error.value = err.message || 'Erreur lors de la validation de la quête';
+        console.error('Erreur lors de la génération de l\'équipe:', err);
+        error.value = err.message || 'Erreur lors de la génération de l\'équipe';
     } finally {
-        isSubmitting.value = false;
+        isGeneratingTeam.value = false;
+    }
+};
+
+const handleSubmit = async () => {
+    if (!showTeamPreview.value) {
+        // Première étape : générer l'équipe
+        await generateTeamPreview();
+    } else {
+        // Deuxième étape : valider l'équipe et lancer la quête
+        isSubmitting.value = true;
+        error.value = '';
+
+        try {
+            await QuestService.validateTeam(
+                props.quest.id,
+                generatedTeam.value.aventurierIds
+            );
+            emit('quest-validated');
+            closeModal();
+        } catch (err) {
+            console.error('Erreur lors de la validation de l\'équipe:', err);
+            error.value = err.message || 'Erreur lors de la validation de l\'équipe';
+        } finally {
+            isSubmitting.value = false;
+        }
     }
 };
 
@@ -167,7 +207,48 @@ const statusOptions = [
 
                     <!-- Formulaire -->
                     <form @submit.prevent="handleSubmit" class="space-y-3 sm:space-y-4 md:space-y-5">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <!-- Affichage de l'équipe générée -->
+                        <div v-if="showTeamPreview" class="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-lg sm:rounded-xl p-4 sm:p-5 border-2 border-primary/30 shadow-lg">
+                            <h3 class="font-cinzel text-primary-dark text-base sm:text-lg md:text-xl mb-3 sm:mb-4 flex items-center gap-2">
+                                <span class="text-xl sm:text-2xl">👥</span> Équipe Générée
+                            </h3>
+                            
+                            <div class="space-y-2 sm:space-y-3 mb-3 sm:mb-4">
+                                <div v-for="adventurer in teamAdventurers" :key="adventurer.id" 
+                                     class="bg-white rounded-lg p-3 sm:p-4 border border-primary/20 shadow-sm hover:shadow-md transition-all">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-2 sm:gap-3">
+                                            <span class="text-2xl sm:text-3xl">{{ getSpecialiteIcon(adventurer.specialite?.nom) }}</span>
+                                            <div>
+                                                <p class="font-cinzel text-primary-dark text-sm sm:text-base font-semibold">{{ adventurer.nom }}</p>
+                                                <p class="text-xs sm:text-sm text-txt-secondary">{{ adventurer.specialite?.nom }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-xs sm:text-sm text-txt-secondary">Taux journalier</p>
+                                            <p class="font-cinzel text-secondary-dark text-sm sm:text-base font-semibold">{{ adventurer.tauxJournalierBase }} 💰</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2 sm:gap-3 bg-white/50 rounded-lg p-3 sm:p-4 border border-primary/20">
+                                <div class="text-center">
+                                    <p class="text-xs sm:text-sm text-txt-secondary mb-1">Nombre d'aventuriers</p>
+                                    <p class="font-cinzel text-primary-dark text-lg sm:text-xl font-bold">{{ generatedTeam.nombreAventuriers }}</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-xs sm:text-sm text-txt-secondary mb-1">Coût estimé</p>
+                                    <p class="font-cinzel text-secondary-dark text-lg sm:text-xl font-bold">{{ generatedTeam.coutTotalEstime?.toFixed(2) }} 💰</p>
+                                </div>
+                                <div class="text-center col-span-2">
+                                    <p class="text-xs sm:text-sm text-txt-secondary mb-1">Score moyen</p>
+                                    <p class="font-cinzel text-primary-dark text-lg sm:text-xl font-bold">{{ generatedTeam.scoreMoyen?.toFixed(1) }} ⭐</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-show="!showTeamPreview" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <!-- Nom -->
                             <div class="flex flex-col sm:col-span-2">
                                 <label for="modal-nom" class="input-label flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base">
@@ -267,7 +348,7 @@ const statusOptions = [
                         </div>
 
                         <!-- Spécialités requises -->
-                        <div class="flex flex-col">
+                        <div v-show="!showTeamPreview" class="flex flex-col">
                             <label class="input-label flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 text-sm sm:text-base">
                                 <span class="text-base sm:text-lg md:text-xl">⚔️</span> Spécialités requises
                             </label>
@@ -290,7 +371,7 @@ const statusOptions = [
                         </div>
 
                         <!-- Résumé -->
-                        <div class="bg-primary/5 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/20">
+                        <div v-show="!showTeamPreview" class="bg-primary/5 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-primary/20">
                             <h4 class="font-cinzel text-primary-dark text-xs sm:text-sm mb-1.5 sm:mb-2 flex items-center gap-1.5 sm:gap-2">
                                 <span>📋</span> Résumé
                             </h4>
@@ -318,6 +399,15 @@ const statusOptions = [
                         <!-- Boutons -->
                         <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center pt-3 sm:pt-4 border-t-2 border-primary/20">
                             <button
+                                v-if="showTeamPreview"
+                                type="button"
+                                @click="showTeamPreview = false"
+                                class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-txt-secondary to-txt-primary text-white rounded-lg font-cinzel text-sm sm:text-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
+                            >
+                                ⬅️ Modifier
+                            </button>
+                            <button
+                                v-else
                                 type="button"
                                 @click="closeModal"
                                 class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-txt-secondary to-txt-primary text-white rounded-lg font-cinzel text-sm sm:text-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105"
@@ -327,10 +417,12 @@ const statusOptions = [
                             <button
                                 type="submit"
                                 class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-secondary to-secondary-dark text-white rounded-lg font-cinzel text-sm sm:text-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
-                                :disabled="isSubmitting || (formData.statut !== 'REJETEE' && selectedSpecialites.length === 0)"
+                                :disabled="isGeneratingTeam || isSubmitting"
                             >
                                 <span class="relative z-10 flex items-center justify-center gap-1.5 sm:gap-2">
-                                    {{ isSubmitting ? '⚡ Validation...' : '✅ Valider' }}
+                                    <span v-if="isGeneratingTeam">⚡ Génération...</span>
+                                    <span v-else-if="showTeamPreview">✅ Valider l'équipe</span>
+                                    <span v-else>🎯 Générer l'équipe</span>
                                 </span>
                             </button>
                         </div>

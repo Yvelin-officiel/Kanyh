@@ -1,6 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import { fetchWithAuth } from '../utils/api';
-
+import { fetchWithAuth } from "../utils/api";
 
 class QuestService {
   /**
@@ -26,7 +25,7 @@ class QuestService {
 
   static async fetchAdventurerQuestsHistory(adventurerId) {
     const response = await fetchWithAuth(
-      `${API_BASE_URL}/quetes/historique/${adventurerId}`
+      `${API_BASE_URL}/quetes/historique/${adventurerId}`,
     );
     const data = await response.json();
     return data;
@@ -57,6 +56,42 @@ class QuestService {
     await fetchWithAuth(`${API_BASE_URL}/quetes/${id}`, {
       method: "DELETE",
     });
+  }
+
+  /**
+   * Génère une équipe pour une quête
+   * @param {number} id - L'ID de la quête
+   * @param {number} nombreParticipants - Nombre d'aventuriers souhaités
+   * @returns {Promise<Object>} L'équipe générée (TeamSuggestionDTO)
+   */
+  static async generateTeam(id, nombreParticipants = 4) {
+    const response = await fetchWithAuth(
+      `${API_BASE_URL}/quetes/${id}/generate-team`,
+      {
+        method: "POST",
+      },
+    );
+
+    const data = await response.json();
+    return data;
+  }
+  /**
+   * Valide l'équipe générée et lance la quête
+   * @param {number} id - L'ID de la quête
+   * @param {Array<number>} aventurierIds - Liste des IDs des aventuriers
+   * @returns {Promise<Object>} La quête mise à jour
+   */
+  static async validateTeam(id, aventurierIds) {
+    const response = await fetchWithAuth(
+      `${API_BASE_URL}/quetes/${id}/validate-team`,
+      {
+        method: "POST",
+        body: JSON.stringify(aventurierIds),
+      },
+    );
+
+    const data = await response.json();
+    return data;
   }
 }
 
